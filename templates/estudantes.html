@@ -1,0 +1,15 @@
+<!-- list_students.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Estudantes</title>
+</head>
+<body>
+    <h1>Selecione o Estudante</h1>
+    <ul>
+        {% for student in students %}
+            <li><a href="{% url 'pdi_list' student.id %}">{{ student.nome }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

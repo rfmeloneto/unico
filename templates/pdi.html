@@ -1,0 +1,22 @@
+<!-- pdi.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pdi</title>
+</head>
+<body>
+    <h1>Veja o PDI</h1>
+    <ul>
+        {% for pdi in pdi_list %}
+            <li>{{ pdi.titulo }}</li>
+            <li>{{ pdi.data_inicial }}</li>
+            <li>{{ pdi.data_final }}</li>
+            <li>{{ pdi.descricao }}</li>
+            <li>{{ pdi.estudante }}</li>
+            <li>{{ pdi.ativo }}</li>
+            <li>{{ pdi.concluido }}</li>
+            <li>{{ pdi.arquivo }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
