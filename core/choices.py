@@ -11,13 +11,13 @@ DEFICIENCIA_CHOICES = [
     (10, "Altas Habilidades ou Superdotação"),
 ]
 
-ETAPA_ENSINO = [
+ETAPA_ENSINO_CHOICES = [
     (1, "Ensino Fundamental Anos Iniciais"),
     (2, "Ensino Fundamental Anos Finais"),
     (3, "Ensino Medio"),
 ]
 
-SERIE = [
+SERIE_CHOICES = [
     (1, "1 Ano"),
     (2, "2 Ano"),
     (3, "3 Ano"),
@@ -40,12 +40,25 @@ PERFIL_CHOICES = [
     (5, "Saúde"),
 ]
 
-LOCALIZACAO = [
+LOCALIZACAO_CHOICES = [
     (1, "Rural"),
     (2, "Urbana"),
 ]
 
-DEP_ADM = [
+DEP_ADM_CHOICES = [
     (1, "Municiapal"),
     (2, "Estadual"),
+]
+
+COMPETENCIA_CHOICES = [
+    (1, "Conhecimento"),
+    (2, "Pensamento científico, crítico e criativo"),
+    (3, "Senso estético e repertório cultural"),
+    (4, "Comunicação"),
+    (5, "Cultura digital"),
+    (6, "Reconhecimento"),
+    (7, "Autogestão"),
+    (8, "Autonomia"),
+    (9, "Autoconhecimento e autocuidado"),
+    (10, "Empatia e cooperação"),
 ]

@@ -36,7 +36,7 @@ def login_view(request):
 
 def list_students(request):
     integrante = request.user.profile
-    students = integrante.estudante.all()
+    students = integrante.estudante_integrantes.all()
     return render(request, "estudantes.html", {"students": students})
 
 

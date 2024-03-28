@@ -2,12 +2,26 @@ from django.db import models
 from django.contrib.auth.models import User
 from core.choices import (
     DEFICIENCIA_CHOICES,
-    ETAPA_ENSINO,
-    SERIE,
+    ETAPA_ENSINO_CHOICES,
+    SERIE_CHOICES,
     PERFIL_CHOICES,
-    LOCALIZACAO,
-    DEP_ADM,
+    LOCALIZACAO_CHOICES,
+    DEP_ADM_CHOICES,
 )
+
+
+class Habilidade(models.Model):
+    habilidade = models.CharField(max_length=300, blank=False, null=False)
+
+    def __str__(self):
+        return f"{self.habilidade}"
+
+
+class Competencia(models.Model):
+    competencia = models.CharField(max_length=300, blank=False, null=False)
+
+    def __str__(self):
+        return f"{self.competencia}"
 
 
 class Arquivo(models.Model):
@@ -38,9 +52,11 @@ class Deficiencia(models.Model):
 
 class Etapa(models.Model):
     etapa = models.CharField(
-        max_length=300, choices=ETAPA_ENSINO, blank=True, null=True
+        max_length=300, choices=ETAPA_ENSINO_CHOICES, blank=True, null=True
     )
-    serie = models.CharField(max_length=300, choices=SERIE, blank=True, null=True)
+    serie = models.CharField(
+        max_length=300, choices=SERIE_CHOICES, blank=True, null=True
+    )
 
     def __str__(self):
         return f"{self.get_etapa_display() - self.get_serie_display()}"
@@ -54,9 +70,11 @@ class Escola(models.Model):
     telefone = models.CharField(max_length=300, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     localizacao = models.CharField(
-        choices=LOCALIZACAO, max_length=300, blank=False, null=False
+        choices=LOCALIZACAO_CHOICES, max_length=300, blank=False, null=False
     )
-    dep_adm = models.CharField(choices=DEP_ADM, max_length=300, blank=False, null=False)
+    dep_adm = models.CharField(
+        choices=DEP_ADM_CHOICES, max_length=300, blank=False, null=False
+    )
     codigo_inep = models.CharField(max_length=300, blank=False, null=False)
     etapa = models.ManyToManyField(
         Etapa, related_name="escola_etapas", null=True, blank=True
@@ -92,7 +110,7 @@ class Estudante(models.Model):
         return f"{self.nome} - {self.escola.nome} - {self.get_etapa.serie_display()}"
 
 
-class Integante(models.Model):
+class Integrante(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="integrante_user"
     )
@@ -115,14 +133,25 @@ class Pdi(models.Model):
     data_inicial = models.DateField()
     data_final = models.DateField()
     descricao = models.TextField(null=False, blank=False)
+    habilidade = models.ManyToManyField(
+        Habilidade, related_name="pdi_habilidades", blank=True, null=True
+    )
+    competencia = models.ManyToManyField(
+        Competencia, related_name="pdi_competencias", blank=True, null=True
+    )
+
     estudante = models.ForeignKey(
-        Estudante, on_delete=models.CASCADE, related_name="estudante_pdi"
+        Estudante, on_delete=models.CASCADE, related_name="pdi_estudante"
     )
     integrante = models.ManyToManyField("Integrante")
     ativo = models.BooleanField(default=True)
     concluido = models.BooleanField(default=False)
     arquivo = models.ForeignKey(
-        Arquivo, on_delete=models.CASCADE, null=True, blank=True
+        Arquivo,
+        related_name="pdi_arquivo",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
 
     def __str__(self):
@@ -139,7 +168,49 @@ class Pdi(models.Model):
 class Comunicacao(models.Model):
     autor = models.ForeignKey("Integrante", on_delete=models.CASCADE)
     menssagem = models.TextField(blank=False, null=False)
-    pdi = models.ForeignKey("Pdi", on_delete=models.CASCADE)
+    pdi = models.ForeignKey(
+        "Pdi", related_name="comunicacao_pdi", on_delete=models.CASCADE
+    )
+    arquivo = models.ForeignKey(
+        Arquivo,
+        related_name="comunicacao_arquivo",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
         return f"{self.autor} {self.menssagem[:20]}"
+
+
+class Avaliacao(models.Model):
+    pdi = models.ForeignKey(
+        "Pdi", related_name="avaliacao_pdi", on_delete=models.CASCADE
+    )
+    formulario = models.ManyToManyField(
+        "Formulario", related_name="avaliacao_formularios"
+    )
+    arquivo = models.ForeignKey(
+        Arquivo,
+        related_name="avaliacao_arquivo",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+
+    def __str__(self):
+        return f"{self.pdi} {self.arquivo}"
+
+
+class Formulario(models.Model):
+    habilidade = models.ForeignKey(
+        "Habilidade", related_name="formulario_habilidade", on_delete=models.CASCADE
+    )
+    competencia = models.ForeignKey(
+        "Competencia", related_name="formulario_competencia", on_delete=models.CASCADE
+    )
+    nota = models.IntegerField(default=0)
+    estrategia = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.pdi} {self.arquivo}"
