@@ -51,31 +51,37 @@ def list_students(request):
 
 
 def pdi_list(request, student_id):
-    pdi_list = Pdi.objects.filter(estudante_id=student_id)
-    student = Estudante.objects.get(id=student_id)
-    return render(request, "pdi.html", {"pdi_list": pdi_list, "student": student})
+    if not request.user.is_authenticated:
+        return redirect("login")
+    else:
+        pdi_list = Pdi.objects.filter(estudante_id=student_id)
+        student = Estudante.objects.get(id=student_id)
+        return render(request, "pdi.html", {"pdi_list": pdi_list, "student": student})
 
 
 def adicionar_pdi(request, estudante_id):
-    estudante = Estudante.objects.get(pk=estudante_id)
-    if request.method == "POST":
-        form = PdiForm(request.POST)
-        formset = FormularioFormSet(request.POST)
-        if form.is_valid() and formset.is_valid():
-            pdi = form.save(commit=False)
-            pdi.estudante = estudante
-            pdi.save()
-            formset.instance = pdi
-            formset.save()
-            return redirect("pdi_list", estudante_id=estudante_id)
+    if not request.user.is_authenticated:
+        return redirect("login")
     else:
-        form = PdiForm()
-        formset = FormularioFormSet()
-    return render(
-        request,
-        "add_pdi.html",
-        {"form": form, "formset": formset, "estudante": estudante},
-    )
+        estudante = Estudante.objects.get(pk=estudante_id)
+        if request.method == "POST":
+            form = PdiForm(request.POST)
+            formset = FormularioFormSet(request.POST)
+            if form.is_valid() and formset.is_valid():
+                pdi = form.save(commit=False)
+                pdi.estudante = estudante
+                pdi.save()
+                formset.instance = pdi
+                formset.save()
+                return redirect("pdi_list", student_id=estudante_id)
+        else:
+            form = PdiForm()
+            formset = FormularioFormSet()
+        return render(
+            request,
+            "add_pdi.html",
+            {"form": form, "formset": formset, "estudante": estudante},
+        )
 
 
 #### APIS VIEWS #####

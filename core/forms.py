@@ -6,7 +6,7 @@ from django.forms import inlineformset_factory
 class FormularioForm(forms.ModelForm):
     class Meta:
         model = Formulario
-        fields = ["habilidade", "competencia", "nota", "estrategia"]
+        fields = ["habilidade", "competencia", "estrategia", "nota"]
 
 
 class PdiForm(forms.ModelForm):
