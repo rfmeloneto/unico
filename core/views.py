@@ -1,3 +1,4 @@
+import logging
 from django.shortcuts import render
 from .serializer import (
     UserSerializer,
@@ -19,6 +20,9 @@ from django.urls import include, path
 from rest_framework.viewsets import ModelViewSet
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic.edit import UpdateView
+from .forms import PdiForm, FormularioFormSet
+
+log = logging.getLogger(__name__)
 
 
 def login_view(request):
@@ -35,14 +39,43 @@ def login_view(request):
 
 
 def list_students(request):
-    integrante = request.user.profile
-    students = integrante.estudante_integrantes.all()
-    return render(request, "estudantes.html", {"students": students})
+    log.info(request.user)
+    if not request.user.is_authenticated:
+        return redirect("login")
+    else:
+        integrante = request.user.integrante_user.first()
+        log.info(integrante)
+        students = integrante.estudante_integrantes.all()
+        log.info(students)
+        return render(request, "estudantes.html", {"students": students})
 
 
 def pdi_list(request, student_id):
     pdi_list = Pdi.objects.filter(estudante_id=student_id)
-    return render(request, "pdi.html", {"pdi_list": pdi_list})
+    student = Estudante.objects.get(id=student_id)
+    return render(request, "pdi.html", {"pdi_list": pdi_list, "student": student})
+
+
+def adicionar_pdi(request, estudante_id):
+    estudante = Estudante.objects.get(pk=estudante_id)
+    if request.method == "POST":
+        form = PdiForm(request.POST)
+        formset = FormularioFormSet(request.POST)
+        if form.is_valid() and formset.is_valid():
+            pdi = form.save(commit=False)
+            pdi.estudante = estudante
+            pdi.save()
+            formset.instance = pdi
+            formset.save()
+            return redirect("pdi_list", estudante_id=estudante_id)
+    else:
+        form = PdiForm()
+        formset = FormularioFormSet()
+    return render(
+        request,
+        "add_pdi.html",
+        {"form": form, "formset": formset, "estudante": estudante},
+    )
 
 
 #### APIS VIEWS #####

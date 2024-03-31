@@ -1,11 +1,11 @@
-<!-- pdi.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Pdi</title>
-</head>
+{% extends 'base.html' %}
+{% block title %}PDI{% endblock %}
+{% block content %}
 <body>
-    <h1>Veja o PDI</h1>
+    <div class = "row">
+    <h1>PDI - {{student.nome}}</h1>
+    <a href="{% url 'add_pdi' student.id %}">Criar novo PDI</a>
+    </div>
     <ul>
         {% for pdi in pdi_list %}
             <li>{{ pdi.titulo }}</li>
@@ -19,4 +19,4 @@
         {% endfor %}
     </ul>
 </body>
-</html>
+{% endblock %}

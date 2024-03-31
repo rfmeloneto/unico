@@ -11,6 +11,7 @@ from .views import (
     login_view,
     list_students,
     pdi_list,
+    adicionar_pdi,
 )
 
 
@@ -18,6 +19,7 @@ urlpatterns = [
     path("", login_view, name="login"),
     path("lista-estudantes", list_students, name="list_students"),
     path("pdi_list/<int:student_id>/", pdi_list, name="pdi_list"),
+    path("add_pdi/<int:estudante_id>/", adicionar_pdi, name="add_pdi"),
     ### API URLS ###
     path(
         "v1/escola/<int:pk>/",

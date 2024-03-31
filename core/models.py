@@ -1,3 +1,6 @@
+import logging
+from django.db.transaction import atomic
+from core.core_exceptions import EstudanteExceptions
 from django.db import models
 from django.contrib.auth.models import User
 from core.choices import (
@@ -7,7 +10,10 @@ from core.choices import (
     PERFIL_CHOICES,
     LOCALIZACAO_CHOICES,
     DEP_ADM_CHOICES,
+    COMPETENCIA_CHOICES,
 )
+
+log = logging.getLogger(__name__)
 
 
 class Habilidade(models.Model):
@@ -18,10 +24,12 @@ class Habilidade(models.Model):
 
 
 class Competencia(models.Model):
-    competencia = models.CharField(max_length=300, blank=False, null=False)
+    competencia = models.IntegerField(
+        choices=COMPETENCIA_CHOICES, blank=False, null=False
+    )
 
     def __str__(self):
-        return f"{self.competencia}"
+        return f"{self.get_competencia_display()}"
 
 
 class Arquivo(models.Model):
@@ -42,8 +50,8 @@ class Perfil(models.Model):
 
 
 class Deficiencia(models.Model):
-    deficiencia = models.CharField(
-        max_length=300, choices=DEFICIENCIA_CHOICES, blank=True, null=True
+    deficiencia = models.IntegerField(
+        choices=DEFICIENCIA_CHOICES, blank=True, null=True
     )
 
     def __str__(self):
@@ -51,15 +59,11 @@ class Deficiencia(models.Model):
 
 
 class Etapa(models.Model):
-    etapa = models.CharField(
-        max_length=300, choices=ETAPA_ENSINO_CHOICES, blank=True, null=True
-    )
-    serie = models.CharField(
-        max_length=300, choices=SERIE_CHOICES, blank=True, null=True
-    )
+    etapa = models.IntegerField(choices=ETAPA_ENSINO_CHOICES, blank=True, null=True)
+    serie = models.IntegerField(choices=SERIE_CHOICES, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.get_etapa_display() - self.get_serie_display()}"
+        return f"{self.get_etapa_display()} - {self.get_serie_display()}"
 
 
 class Escola(models.Model):
@@ -69,12 +73,10 @@ class Escola(models.Model):
     endereco = models.TextField(blank=True, null=True)
     telefone = models.CharField(max_length=300, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
-    localizacao = models.CharField(
-        choices=LOCALIZACAO_CHOICES, max_length=300, blank=False, null=False
+    localizacao = models.IntegerField(
+        choices=LOCALIZACAO_CHOICES, blank=False, null=False
     )
-    dep_adm = models.CharField(
-        choices=DEP_ADM_CHOICES, max_length=300, blank=False, null=False
-    )
+    dep_adm = models.IntegerField(choices=DEP_ADM_CHOICES, blank=False, null=False)
     codigo_inep = models.CharField(max_length=300, blank=False, null=False)
     etapa = models.ManyToManyField(
         Etapa, related_name="escola_etapas", null=True, blank=True
@@ -107,7 +109,7 @@ class Estudante(models.Model):
     )
 
     def __str__(self):
-        return f"{self.nome} - {self.escola.nome} - {self.get_etapa.serie_display()}"
+        return f"{self.nome} - {self.escola.nome} - {self.etapa.serie}"
 
 
 class Integrante(models.Model):
@@ -115,7 +117,6 @@ class Integrante(models.Model):
         User, on_delete=models.CASCADE, related_name="integrante_user"
     )
     escola = models.ManyToManyField(Escola, related_name="integrante_escolas")
-    nome = models.CharField(max_length=300, blank=False, null=False)
     perfil = models.ForeignKey(
         Perfil,
         related_name="integrante_perfil",
@@ -125,7 +126,7 @@ class Integrante(models.Model):
     )
 
     def __str__(self):
-        return f"{self.nome} - {self.escola.nome} - {self.get_perfil_display()}"
+        return f"{self.user.first_name} - {[escola for escola in self.escola.all()]} - {self.perfil.get_tipo_display()}"
 
 
 class Pdi(models.Model):
@@ -203,6 +204,13 @@ class Avaliacao(models.Model):
 
 
 class Formulario(models.Model):
+    pdi = models.ForeignKey(
+        "Pdi",
+        related_name="formulario_pdi",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
     habilidade = models.ForeignKey(
         "Habilidade", related_name="formulario_habilidade", on_delete=models.CASCADE
     )

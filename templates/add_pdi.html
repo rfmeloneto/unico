@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Adicionar PDI para {{ estudante.nome }}</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2>Adicionar PDI para {{ estudante.nome }}</h2>
+    <form id="pdi-form" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {{ formset.management_form }}
+        <fieldset id="formulario-fieldset">
+            <legend>Formulários:</legend>
+            {{ formset.as_p }}
+        </fieldset>
+        <button type="button" id="add-formulario">Adicionar Formulário</button>
+        <button type="button" id="remove-formulario">Remover Último Formulário</button>
+        <button type="submit">Salvar</button>
+    </form>
+
+    <script>
+        $(document).ready(function() {
+            $('#add-formulario').click(function() {
+                var formCount = $('#id_pdi_form-TOTAL_FORMS').val();
+                var lastForm = $('#formulario-fieldset fieldset:last');
+                var newForm = lastForm.clone();
+                newForm.find(':input').val('');
+                newForm.insertAfter(lastForm);
+                $('#id_pdi_form-TOTAL_FORMS').val(parseInt(formCount) + 1);
+            });
+
+            $('#remove-formulario').click(function() {
+                var formCount = $('#id_pdi_form-TOTAL_FORMS').val();
+                if (formCount > 1) {
+                    $('#formulario-fieldset fieldset:last').remove();
+                    $('#id_pdi_form-TOTAL_FORMS').val(parseInt(formCount) - 1);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
+
