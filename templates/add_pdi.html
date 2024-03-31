@@ -1,40 +1,44 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Adicionar PDI para {{ estudante.nome }}</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</head>
-<body>
-    <h2>Adicionar PDI para {{ estudante.nome }}</h2>
-    <form id="pdi-form" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        {{ formset.management_form }}
-        <fieldset id="formulario-fieldset">
-            <legend>Formulários:</legend>
-            {% for form in formset %}
-                <div class="formulario">
-                    {{ form.as_p }}
-                    
-                </div>
-            {% endfor %}
-        </fieldset>
-        <button type="button" id="add-formulario">Adicionar Formulário</button>
-        <button type="button" id="remove-formulario">Remover Último Formulário</button>
-        <button type="submit">Salvar</button>
-    </form>
 
-    <!-- Modelo de formulário oculto -->
-    <div id="formulario-modelo" style="display: none;">
-        <div class="formulario">
-            {{ formset.empty_form.as_p }}
+{% extends 'base.html' %}
+{% block title %}Adicionar PDI{% endblock %}
+{% block content %}
+
+    <div id="content">
+        <h2>Adicionar PDI para {{ estudante.nome }}</h2>
+        <form id="pdi-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            {{ formset.management_form }}
+            <fieldset id="formulario-fieldset">
+                <legend>Atividades:</legend>
+                {% for form in formset %}
+                    <div class="formulario">
+                        {{ form.as_p }}
+                    </div>
+                    <hr>
+                {% endfor %}
+            </fieldset>
+            <div class="margin-3">
+            <button type="button" class="button" id="add-formulario">Adicionar Atividade</button>
+            <button type="button" class="button" id="remove-formulario">Remover Última Atividade</button>
+            <button type="submit" class="button" >Salvar</button>
+            </div>
+        </form>
+
+        <!-- Modelo de formulário oculto -->
+        <div id="formulario-modelo" style="display: none;">
+            <div class="formulario">
+                {{ formset.empty_form.as_p }}
+            </div>
+            
         </div>
     </div>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#add-formulario').click(function() {
                 var newForm = $('#formulario-modelo .formulario').clone();
+                newForm.append('<hr>');
                 $('#formulario-fieldset').append(newForm);
                 newForm.show();  
             });
@@ -44,8 +48,7 @@
             });
         });
     </script>
-</body>
-</html>
+{% endblock %}
 
 
 

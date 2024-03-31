@@ -14,6 +14,7 @@ from core.choices import (
 )
 
 log = logging.getLogger(__name__)
+from django.contrib.auth import get_user_model
 
 
 class Habilidade(models.Model):
@@ -221,4 +222,4 @@ class Formulario(models.Model):
     estrategia = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.pdi} {self.arquivo}"
+        return f"{self.pdi}"

@@ -21,6 +21,8 @@ from rest_framework.viewsets import ModelViewSet
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic.edit import UpdateView
 from .forms import PdiForm, FormularioFormSet
+from django.contrib.auth.decorators import login_required
+
 
 log = logging.getLogger(__name__)
 
@@ -60,28 +62,50 @@ def pdi_list(request, student_id):
 
 
 def adicionar_pdi(request, estudante_id):
-    if not request.user.is_authenticated:
-        return redirect("login")
+    if request.method == "POST":
+        form = PdiForm(request.POST)
+        formset = FormularioFormSet(request.POST)
+        if form.is_valid() and formset.is_valid():
+            pdi = form.save(commit=False)
+            pdi.estudante = Estudante.objects.get(pk=estudante_id)
+            pdi.save()
+
+            for form in formset:
+                if form.cleaned_data:
+                    formulario = form.save(commit=False)
+                    formulario.pdi = pdi
+                    formulario.save()
+
+            habilidades = form.cleaned_data["habilidade"]
+            competencias = form.cleaned_data["competencia"]
+            log.info(competencias)
+            if not isinstance(habilidades, list):
+                habilidades = [habilidades]
+            if not isinstance(competencias, list):
+                competencias = [competencias]
+
+            for habilidade in habilidades:
+                pdi.habilidade.add(habilidade)
+
+            for competencia in competencias:
+                pdi.competencia.add(competencia)
+
+            integrante = Integrante.objects.get(user=request.user)
+            pdi.integrante.add(integrante)
+
+            return redirect("pdi_list", student_id=estudante_id)
     else:
-        estudante = Estudante.objects.get(pk=estudante_id)
-        if request.method == "POST":
-            form = PdiForm(request.POST)
-            formset = FormularioFormSet(request.POST)
-            if form.is_valid() and formset.is_valid():
-                pdi = form.save(commit=False)
-                pdi.estudante = estudante
-                pdi.save()
-                formset.instance = pdi
-                formset.save()
-                return redirect("pdi_list", student_id=estudante_id)
-        else:
-            form = PdiForm()
-            formset = FormularioFormSet()
-        return render(
-            request,
-            "add_pdi.html",
-            {"form": form, "formset": formset, "estudante": estudante},
-        )
+        form = PdiForm()
+        formset = FormularioFormSet()
+    return render(
+        request,
+        "add_pdi.html",
+        {
+            "form": form,
+            "formset": formset,
+            "estudante": Estudante.objects.get(pk=estudante_id),
+        },
+    )
 
 
 #### APIS VIEWS #####
