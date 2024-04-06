@@ -1,5 +1,6 @@
 import logging
-from django.shortcuts import render
+from pyexpat.errors import messages
+from django.shortcuts import get_object_or_404, render
 from .serializer import (
     UserSerializer,
     EscolaSerializer,
@@ -9,22 +10,58 @@ from .serializer import (
     PdiSerializer,
     ComunicacaoSerializer,
 )
-from .models import Arquivo, Escola, Perfil, Estudante, Integrante, Pdi, Comunicacao
+from .models import (
+    Arquivo,
+    Escola,
+    Perfil,
+    Estudante,
+    Integrante,
+    Pdi,
+    Comunicacao,
+    Formulario,
+)
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from rest_framework.views import Response
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from rest_framework.decorators import api_view
-from django.urls import include, path
+from django.urls import include, path, reverse
 from rest_framework.viewsets import ModelViewSet
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic.edit import UpdateView
-from .forms import PdiForm, FormularioFormSet
+from .forms import PdiForm, FormularioForm
 from django.contrib.auth.decorators import login_required
 
 
 log = logging.getLogger(__name__)
+
+
+from django.http import JsonResponse
+
+
+def delete_pdi(request, pdi_id):
+    pdi = get_object_or_404(Pdi, pk=pdi_id)
+    estudante = pdi.estudante.id
+    if request.method == "POST":
+        pdi.delete()
+        messages.success(request, "O PDI foi excluído com sucesso.")
+        return JsonResponse(
+            {"redirect": reverse("pdi_list", kwargs={"student_id": estudante})}
+        )
+    return JsonResponse({"error": "Método não permitido."}, status=405)
+
+
+def delete_atividade(request, atividade_id):
+    atividade = get_object_or_404(Formulario, pk=atividade_id)
+    pdi_id = atividade.pdi_id
+    if request.method == "POST":
+        atividade.delete()
+        messages.success(request, "A atividade foi excluída com sucesso.")
+        return JsonResponse(
+            {"redirect": request.path}
+        )  # Redirecionar de volta para a mesma página
+    return JsonResponse({"error": "Método não permitido."}, status=405)
 
 
 def login_view(request):
@@ -64,46 +101,83 @@ def pdi_list(request, student_id):
 def adicionar_pdi(request, estudante_id):
     if request.method == "POST":
         form = PdiForm(request.POST)
-        formset = FormularioFormSet(request.POST)
-        if form.is_valid() and formset.is_valid():
+        if form.is_valid():
             pdi = form.save(commit=False)
             pdi.estudante = Estudante.objects.get(pk=estudante_id)
             pdi.save()
-
-            for form in formset:
-                if form.cleaned_data:
-                    formulario = form.save(commit=False)
-                    formulario.pdi = pdi
-                    formulario.save()
-
-            habilidades = form.cleaned_data["habilidade"]
-            competencias = form.cleaned_data["competencia"]
-            log.info(competencias)
-            if not isinstance(habilidades, list):
-                habilidades = [habilidades]
-            if not isinstance(competencias, list):
-                competencias = [competencias]
-
-            for habilidade in habilidades:
-                pdi.habilidade.add(habilidade)
-
-            for competencia in competencias:
-                pdi.competencia.add(competencia)
-
+            if form.cleaned_data:
+                formulario = form.save(commit=False)
+                formulario.pdi = pdi
+                formulario.save()
             integrante = Integrante.objects.get(user=request.user)
             pdi.integrante.add(integrante)
 
             return redirect("pdi_list", student_id=estudante_id)
     else:
         form = PdiForm()
-        formset = FormularioFormSet()
     return render(
         request,
         "add_pdi.html",
         {
             "form": form,
-            "formset": formset,
             "estudante": Estudante.objects.get(pk=estudante_id),
+        },
+    )
+
+
+def edit_pdi(request, pdi_id):
+    pdi = Pdi.objects.get(pk=pdi_id)
+    estudante = pdi.estudante
+    atividades = Formulario.objects.filter(pdi__id=pdi_id)
+    if request.method == "POST":
+        form = PdiForm(request.POST, instance=pdi)
+        if form.is_valid():
+            form.save()
+            return redirect("pdi_list", student_id=pdi.estudante_id)
+    else:
+        form = PdiForm(instance=pdi)
+    return render(
+        request,
+        "edit_pdi.html",
+        {"form": form, "pdi": pdi, "estudante": estudante, "atividades": atividades},
+    )
+
+
+def add_activites(request, pdi_id):
+    form = FormularioForm()
+    if request.method == "POST":
+        form = FormularioForm(request.POST)
+        if form.is_valid():
+            formulario = form.save(commit=False)
+            pdi = Pdi.objects.get(pk=pdi_id)
+            formulario.pdi = pdi
+            formulario.save()
+            return redirect("pdi_list", student_id=pdi.estudante_id)
+    return render(
+        request,
+        "add_activites.html",
+        {
+            "pdi_id": Pdi.objects.get(pk=pdi_id),
+            "form": form,
+        },
+    )
+
+
+def edit_activites(request, atividade_id):
+    atividade = Formulario.objects.get(pk=atividade_id)
+    if request.method == "POST":
+        form = FormularioForm(request.POST, instance=atividade)
+        if form.is_valid():
+            form.save()
+            return redirect("edit_pdi", pdi_id=atividade.pdi.id)
+    else:
+        form = FormularioForm(instance=atividade)
+    return render(
+        request,
+        "edit_activites.html",
+        {
+            "pdi_id": atividade.pdi,
+            "form": form,
         },
     )
 

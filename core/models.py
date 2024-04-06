@@ -135,11 +135,12 @@ class Pdi(models.Model):
     data_inicial = models.DateField()
     data_final = models.DateField()
     descricao = models.TextField(null=False, blank=False)
-    habilidade = models.ManyToManyField(
-        Habilidade, related_name="pdi_habilidades", blank=True, null=True
-    )
-    competencia = models.ManyToManyField(
-        Competencia, related_name="pdi_competencias", blank=True, null=True
+    competencia = models.ForeignKey(
+        Competencia,
+        related_name="pdi_competencias",
+        blank=True,
+        null=True,
+        on_delete=models.DO_NOTHING,
     )
 
     estudante = models.ForeignKey(

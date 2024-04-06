@@ -1,22 +1,31 @@
 {% extends 'base.html' %}
 {% block title %}PDI{% endblock %}
 {% block content %}
-<body>
-    <div class = "row">
-    <h1>PDI - {{student.nome}}</h1>
-    <a href="{% url 'add_pdi' student.id %}">Criar novo PDI</a>
-    </div>
-    <ul>
+<div class="container">
+    <h1 class="mb-4">PDI - {{ student.nome }}</h1>
+    <a href="{% url 'add_pdi' student.id %}" class="btn btn-primary mb-4">Criar novo PDI</a>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for pdi in pdi_list %}
-            <li>{{ pdi.titulo }}</li>
-            <li>{{ pdi.data_inicial }}</li>
-            <li>{{ pdi.data_final }}</li>
-            <li>{{ pdi.descricao }}</li>
-            <li>{{ pdi.estudante }}</li>
-            <li>{{ pdi.ativo }}</li>
-            <li>{{ pdi.concluido }}</li>
-            <li>{{ pdi.arquivo }}</li>
+        <div class="col">
+            <div class="card">
+                <a href="{% url 'edit_pdi' pdi.id %}">
+                <div class="card-body">     
+                    <h5 class="card-title">{{ pdi.titulo }}</h5>
+                    <p class="card-text">{{ pdi.descricao }}</p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Data Inicial: {{ pdi.data_inicial }}</li>
+                        <li class="list-group-item">Data Final: {{ pdi.data_final }}</li>
+                        <li class="list-group-item">Estudante: {{ pdi.estudante }}</li>
+                        <li class="list-group-item">Ativo: {{ pdi.ativo }}</li>
+                        <li class="list-group-item">Concluído: {{ pdi.concluido }}</li>
+                        <li class="list-group-item">Arquivo: {{ pdi.arquivo }}</li>
+                    </ul>
+                </div>
+            </a>
+            </div>
+        </div>
         {% endfor %}
-    </ul>
-</body>
+    </div>
+</div>
 {% endblock %}
+

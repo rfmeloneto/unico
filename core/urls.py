@@ -12,6 +12,11 @@ from .views import (
     list_students,
     pdi_list,
     adicionar_pdi,
+    add_activites,
+    edit_pdi,
+    delete_atividade,
+    delete_pdi,
+    edit_activites,
 )
 
 
@@ -20,6 +25,15 @@ urlpatterns = [
     path("lista-estudantes", list_students, name="list_students"),
     path("pdi_list/<int:student_id>/", pdi_list, name="pdi_list"),
     path("add_pdi/<int:estudante_id>/", adicionar_pdi, name="add_pdi"),
+    path("add_activites/<int:pdi_id>/", add_activites, name="add_activites"),
+    path("edit_pdi/<int:pdi_id>/", edit_pdi, name="edit_pdi"),
+    path("delete_pdi/<int:pdi_id>/", delete_pdi, name="delete_pdi"),
+    path(
+        "delete_atividade/<int:atividade_id>/",
+        delete_atividade,
+        name="delete_atividade",
+    ),
+    path("edit_activites/<int:atividade_id>/", edit_activites, name="edit_activites"),
     ### API URLS ###
     path(
         "v1/escola/<int:pk>/",

@@ -1,22 +1,17 @@
-
 {% extends 'base.html' %}
-{% block title %}Adicionar PDI{% endblock %}
+{% block title %}Adicionar Atividade{% endblock %}
 {% block content %}
 
     <div id="content">
-        <h2>Adicionar PDI para {{ estudante.nome }}</h2>
+        <h2>Adicionar Atividade para {{ pdi_id.titulo }}</h2>
         <form id="pdi-form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
             <div class="margin-3">
             <button type="submit" class="button" >Salvar</button>
-            <a href="{% url 'pdi_list' student_id=estudante.id %}" class="button">Cancelar</a>
             </div>
         </form>
 
 
     </div>
 {% endblock %}
-
-
-

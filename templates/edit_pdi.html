@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}PDI {{ pdi.titulo }} - para {{ estudante.nome }}{% endblock %}
+{% block content %}
+
+<div id="content">
+    <h2>PDI {{ pdi.titulo }} - para {{ estudante.nome }}</h2>
+    <form id="pdi-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="margin-3">
+            <button type="submit" class="button">Salvar Edição</button>
+            <a href="{% url 'pdi_list' student_id=estudante.id %}" class="button" style="text-decoration: none;">Cancelar Edição</a>
+            <a href="{% url 'add_activites' pdi_id=pdi.id %}" class="button" style="text-decoration: none;">Adicionar Atividade</a>
+            <button id="delete-pdi" data-url="{% url 'delete_pdi' pdi.id %}" class ="button">Excluir PDI</button>
+        </div>
+    </form>
+    <hr>
+    <div class="card-container">
+        {% for atividade in atividades %}
+            <div class="card">
+                <p>{{ atividade.competencia }}</p>
+                <p>{{ atividade.habilidade }}</p>
+                <p>{{ atividade.estrategia }}</p>
+                {% if atividade.nota %}
+                    <p>{{ atividade.nota }}</p>
+                {% endif %}
+                <a href="{% url 'edit_activites' atividade.id %}" button class="button" style="text-decoration: none;">Editar Atividade</button> </a>
+                <button class="delete-atividade button" data-url="{% url 'delete_atividade' atividade.id %}" data-atividade-id="{{ atividade.id }}">Excluir Atividade</button>
+            </div>
+            <hr>
+        {% endfor %}
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Excluir PDI
+        $('#delete-pdi').click(function() {
+            if (confirm('Tem certeza de que deseja excluir este PDI?')) {
+                $.ajax({
+                    type: 'POST',
+                    url: $(this).data('url'),
+                    data: {'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                    success: function(response) {
+                        if (response.redirect) {
+                            window.location.href = response.redirect;
+                        }
+                    }
+                });
+            }
+        });
+
+        // Excluir Atividade
+        $('.delete-atividade').click(function() {
+            var atividadeId = $(this).data('atividade-id');
+            if (confirm('Tem certeza de que deseja excluir esta atividade?')) {
+                $.ajax({
+                    type: 'POST',
+                    url: $(this).data('url'),
+                    data: {'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                    success: function(response) {
+                        if (response.redirect) {
+                            window.location.href = response.redirect;
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+{% endblock %}
+
