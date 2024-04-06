@@ -30,7 +30,7 @@ from django.urls import include, path, reverse
 from rest_framework.viewsets import ModelViewSet
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic.edit import UpdateView
-from .forms import PdiForm, FormularioForm
+from .forms import PdiForm, FormularioForm, ComunicacaoForm
 from django.contrib.auth.decorators import login_required
 
 
@@ -127,6 +127,7 @@ def adicionar_pdi(request, estudante_id):
 
 def edit_pdi(request, pdi_id):
     pdi = Pdi.objects.get(pk=pdi_id)
+    comentarios = Comunicacao.objects.filter(pdi__id=pdi_id)
     estudante = pdi.estudante
     atividades = Formulario.objects.filter(pdi__id=pdi_id)
     if request.method == "POST":
@@ -139,7 +140,13 @@ def edit_pdi(request, pdi_id):
     return render(
         request,
         "edit_pdi.html",
-        {"form": form, "pdi": pdi, "estudante": estudante, "atividades": atividades},
+        {
+            "form": form,
+            "pdi": pdi,
+            "estudante": estudante,
+            "atividades": atividades,
+            "comentarios": comentarios,
+        },
     )
 
 
@@ -177,6 +184,28 @@ def edit_activites(request, atividade_id):
         "edit_activites.html",
         {
             "pdi_id": atividade.pdi,
+            "form": form,
+        },
+    )
+
+
+def add_comentario(request, pdi_id):
+    form = ComunicacaoForm()
+    user = request.user.integrante_user.first()
+    if request.method == "POST":
+        form = ComunicacaoForm(request.POST)
+        if form.is_valid():
+            comunicacao = form.save(commit=False)
+            pdi = Pdi.objects.get(pk=pdi_id)
+            comunicacao.pdi = pdi
+            comunicacao.autor = user
+            comunicacao.save()
+            return redirect("edit_pdi", pdi_id=pdi_id)
+    return render(
+        request,
+        "add_comentario.html",
+        {
+            "pdi_id": Pdi.objects.get(pk=pdi_id),
             "form": form,
         },
     )

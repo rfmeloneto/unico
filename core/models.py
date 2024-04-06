@@ -152,7 +152,7 @@ class Pdi(models.Model):
     arquivo = models.ForeignKey(
         Arquivo,
         related_name="pdi_arquivo",
-        on_delete=models.CASCADE,
+        on_delete=models.DO_NOTHING,
         null=True,
         blank=True,
     )
@@ -177,7 +177,7 @@ class Comunicacao(models.Model):
     arquivo = models.ForeignKey(
         Arquivo,
         related_name="comunicacao_arquivo",
-        on_delete=models.CASCADE,
+        on_delete=models.DO_NOTHING,
         null=True,
         blank=True,
     )
@@ -196,7 +196,7 @@ class Avaliacao(models.Model):
     arquivo = models.ForeignKey(
         Arquivo,
         related_name="avaliacao_arquivo",
-        on_delete=models.CASCADE,
+        on_delete=models.DO_NOTHING,
         null=True,
         blank=True,
     )

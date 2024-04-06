@@ -1,5 +1,5 @@
 from django import forms
-from .models import Pdi, Formulario, Competencia, Habilidade
+from .models import Pdi, Formulario, Competencia, Habilidade, Comunicacao
 
 
 class FormularioForm(forms.ModelForm):
@@ -59,4 +59,20 @@ class PdiForm(forms.ModelForm):
             "arquivo": "Arquivo",
             "ativo": "Ativo",
             "concluido": "Concluído",
+        }
+
+
+class ComunicacaoForm(forms.ModelForm):
+    class Meta:
+        model = Comunicacao
+        fields = ["menssagem", "arquivo"]
+        widgets = {
+            "menssagem": forms.Textarea(
+                attrs={"class": "form-control custom-textarea", "rows": 10}
+            ),
+            "arquivo": forms.FileInput(attrs={"class": "form-control"}),
+        }
+        labels = {
+            "menssagem": "Menssagem",
+            "arquivo": "Arquivo",
         }

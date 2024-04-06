@@ -17,6 +17,7 @@ from .views import (
     delete_atividade,
     delete_pdi,
     edit_activites,
+    add_comentario,
 )
 
 
@@ -34,6 +35,7 @@ urlpatterns = [
         name="delete_atividade",
     ),
     path("edit_activites/<int:atividade_id>/", edit_activites, name="edit_activites"),
+    path("add_comentario/<int:pdi_id>/", add_comentario, name="add_comentario"),
     ### API URLS ###
     path(
         "v1/escola/<int:pk>/",

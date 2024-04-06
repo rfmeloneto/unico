@@ -11,6 +11,7 @@
             <button type="submit" class="button">Salvar Edição</button>
             <a href="{% url 'pdi_list' student_id=estudante.id %}" class="button" style="text-decoration: none;">Cancelar Edição</a>
             <a href="{% url 'add_activites' pdi_id=pdi.id %}" class="button" style="text-decoration: none;">Adicionar Atividade</a>
+            <a href="{% url 'add_comentario' pdi_id=pdi.id %}" class="button" style="text-decoration: none;">Adicionar Comentário</a>
             <button id="delete-pdi" data-url="{% url 'delete_pdi' pdi.id %}" class ="button">Excluir PDI</button>
         </div>
     </form>
@@ -26,6 +27,16 @@
                 {% endif %}
                 <a href="{% url 'edit_activites' atividade.id %}" button class="button" style="text-decoration: none;">Editar Atividade</button> </a>
                 <button class="delete-atividade button" data-url="{% url 'delete_atividade' atividade.id %}" data-atividade-id="{{ atividade.id }}">Excluir Atividade</button>
+            </div>
+            <hr>
+        {% endfor %}
+    </div>
+
+    <div class="card-container">
+        {% for comentario in comentarios %}
+            <div class="card">
+                <h3>{{ comentario.autor.user.first_name }}</h3>
+                <p>{{ comentario.menssagem }}</p>
             </div>
             <hr>
         {% endfor %}
