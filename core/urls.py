@@ -19,6 +19,8 @@ from .views import (
     edit_activites,
     add_comentario,
     download_files,
+    avaliar_pdi,
+    development_panel,
 )
 
 
@@ -38,6 +40,12 @@ urlpatterns = [
     path("edit_activites/<int:atividade_id>/", edit_activites, name="edit_activites"),
     path("add_comentario/<int:pdi_id>/", add_comentario, name="add_comentario"),
     path("download/<int:arquivo_id>/", download_files, name="download_files"),
+    path("avaliar_pdi/<int:pdi_id>/", avaliar_pdi, name="avaliar_pdi"),
+    path(
+        "development_panel/<int:estudante_id>",
+        development_panel,
+        name="development_panel",
+    ),
     ### API URLS ###
     path(
         "v1/escola/<int:pk>/",

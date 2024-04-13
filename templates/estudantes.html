@@ -5,30 +5,29 @@
 <div class="container">
     <h1 class="text-center my-4">Selecione o Estudante</h1>
 
-    {% if students %}
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="row">
         {% for student in students %}
         <div class="col">
-            <div class="card login-card center h-100">
+            <div class="card mb-4">
                 <a href="{% url 'pdi_list' student.id %}" style="text-decoration: none;">
-                    <div class="card-body d-flex flex-column justify-content-center">
-                        <h3 class="card-title text-center">{{ student.nome }}</h3>
-                        <p class="card-text text-center">{{ student.escola.nome }}</p>
-                        <p class="card-text text-center">{{ student.etapa }}</p>
-                        <ul class="list-group list-group-flush">
-                            {% for deficiencia in student.dificiencia.all %}
-                            <li class="list-group-item text-center">{{ deficiencia }}</li>
-                            {% endfor %}
-                        </ul>
+                    <div class="card-body text-center">
+                        <h3 class="card-title">{{ student.nome }}</h3>
+                        <p class="card-text">{{ student.escola.nome }}</p>
+                        <p class="card-text">{{ student.etapa }}</p>
+                        {% for deficiencia in student.dificiencia.all %}
+                        <p class="card-text">{{ deficiencia }}</p>
+                        {% endfor %}
                     </div>
                 </a>
-            </div> 
+            </div>
         </div>
         {% endfor %}
     </div>
-    {% else %}
+
+    {% if not students %}
     <p class="text-center">Nenhum estudante na base</p>
     {% endif %}
 </div>
 
 {% endblock %}
+

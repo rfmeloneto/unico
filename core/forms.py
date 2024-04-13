@@ -84,7 +84,9 @@ class AvaliacaoForm(forms.ModelForm):
         model = Avaliacao
         fields = ["comentario", "arquivo"]
         widgets = {
-            "comentario": forms.Textarea(attrs={"class": "form-control", "rows": 10}),
+            "comentario": forms.Textarea(
+                attrs={"class": "form-control custom-textarea", "rows": 10}
+            ),
             "arquivo": forms.FileInput(attrs={"class": "form-control"}),
         }
         labels = {

@@ -9,25 +9,29 @@
         {{ form.as_p }}
         <div class="margin-3">
             <button type="submit" class="button success">Salvar Edição</button>
-            <a href="{% url 'pdi_list' student_id=estudante.id %}" class="button warning" style="text-decoration: none;">Cancelar Edição</a>
-            <a href="{% url 'add_activites' pdi_id=pdi.id %}" class="button info" style="text-decoration: none;">Adicionar Atividade</a>
-            <a href="{% url 'add_comentario' pdi_id=pdi.id %}" class="button info" style="text-decoration: none;">Adicionar Comentário</a>
-            <button id="delete-pdi" data-url="{% url 'delete_pdi' pdi.id %}" class ="button danger">Excluir PDI</button>
-            <a href="{% url 'avaliar_pdi' pdi_id=pdi.id %}" class="button success" style="text-decoration: none;">Avaliar Pdi</a>
+            <a href="{% url 'pdi_list' student_id=estudante.id %}" class="button" style="text-decoration: none; background-color: grey;">Cancelar Edição</a>
+            <a href="{% url 'add_activites' pdi_id=pdi.id %}" class="button info" style="text-decoration: none; background-color: green;">Adicionar Atividade</a>
+            <a href="{% url 'add_comentario' pdi_id=pdi.id %}" class="button info" style="text-decoration: none;background-color: orange;">Adicionar Comentário</a>
+            <button id="delete-pdi" data-url="{% url 'delete_pdi' pdi.id %}" class ="button" style="background-color: red;">Excluir PDI</button>
+            <a href="{% url 'avaliar_pdi' pdi_id=pdi.id %}" class="button success" style="text-decoration: none; background-color: purple;">Avaliar Pdi</a>
         </div>
     </form>
     <hr>
     <div class="card-container">
+        <h3>Atividades</h3>
         {% for atividade in atividades %}
             <div class="card">
-                <p>{{ atividade.competencia }}</p>
-                <p>{{ atividade.habilidade }}</p>
-                <p>{{ atividade.estrategia }}</p>
+                <p>Competência : {{ atividade.competencia }}</p>
+                <p>Habilidade : {{ atividade.habilidade }}</p>
+                <p>Atividade : {{ atividade.estrategia }}</p>
                 {% if atividade.nota %}
-                    <p>{{ atividade.nota }}</p>
+                    <p>Nota : {{ atividade.nota }}</p>
                 {% endif %}
-                <a href="{% url 'edit_activites' atividade.id %}" button class="button" style="text-decoration: none;">Editar Atividade</button> </a>
-                <button class="delete-atividade button" data-url="{% url 'delete_atividade' atividade.id %}" data-atividade-id="{{ atividade.id }}">Excluir Atividade</button>
+                <a href="{% url 'edit_activites' atividade.id %}" class="btn btn-primary d-inline-block text-center" style="text-decoration: none; width: 100%;">Editar Atividade</a> 
+            </div>
+            <br>
+            <div>
+                <button class="btn-danger delete-atividade" data-url="{% url 'delete_atividade' atividade.id %}" data-atividade-id="{{ atividade.id }}">Excluir Atividade</button>
             </div>
             <hr>
         {% endfor %}
@@ -35,6 +39,7 @@
 
     {% if arquivo.id %}
     <div class="card-container">
+        <h3>Arquivos anexados ao PDI</h3>
         {% for arquivo in arquivos %}
             <div class="card">
                 <p>{{ arquivo.file }}</p>
@@ -48,12 +53,15 @@
     </div>
     {% endif %}
     <div class="card-container">
+        <h3>Comentários</h3>
         {% for comentario in comentarios %}
             <div class="card">
-                <h3>{{ comentario.autor.user.first_name }}</h3>
-                <p>{{ comentario.menssagem }}</p>
+                <h6>Autor: {{ comentario.autor.user.first_name }}</h6>
+                <p>Menssagem : {{ comentario.menssagem }}</p>
                 {% if comentario.arquivo %}
-                <p>{{ comentario.arquivo.file }}</p>
+                <h6>Arquivo Anexado por {{ comentario.autor.user.first_name }}</h6>
+                <p>Arquivo : {{ comentario.arquivo.file }}</p>
+                <br>
                 <a href="{% url 'download_files' comentario.arquivo.id %}" button class="button" style="text-decoration: none;">Baixar</button> </a>
                 {% endif %}
             </div>

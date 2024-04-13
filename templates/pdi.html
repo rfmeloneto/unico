@@ -4,6 +4,8 @@
 <div class="container">
     <h1 class="mb-4">PDI - {{ student.nome }}</h1>
     <a href="{% url 'add_pdi' student.id %}" class="btn btn-primary mb-4">Criar novo PDI</a>
+    <a href="{% url 'list_students'%}" class="btn btn-primary mb-4">Listar Estudantes</a>
+    <a href="{% url 'development_panel' student.id%}" class="btn btn-primary mb-4">Painel de Desenvolvimento</a>
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for pdi in pdi_list %}
         <div class="col">

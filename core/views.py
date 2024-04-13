@@ -170,7 +170,7 @@ def add_activites(request, pdi_id):
             pdi = Pdi.objects.get(pk=pdi_id)
             formulario.pdi = pdi
             formulario.save()
-            return redirect("pdi_list", student_id=pdi.estudante_id)
+            return redirect("edit_pdi", pdi_id=pdi.id)
     return render(
         request,
         "add_activites.html",
@@ -258,9 +258,19 @@ def avaliar_pdi(request, pdi_id):
         request,
         "avaliar_pdi.html",
         {
-            "pdi": pdi,
+            "pdi_id": pdi,
             "form": form,
         },
+    )
+
+
+def development_panel(request, estudante_id):
+    estudante = get_object_or_404(Estudante, pk=estudante_id)
+    pdis = Pdi.objects.filter(estudante=estudante_id)
+    return render(
+        request,
+        "development_panel.html",
+        {"estudante": estudante, "pdis": pdis},
     )
 
 

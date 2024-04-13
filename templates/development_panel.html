@@ -1,0 +1,88 @@
+
+
+
+
+{% extends 'base.html' %}
+{% block title %}Painel de Desenvolvimento{% endblock %}
+{% block content %}
+
+<div id="content">
+    <h2>Painel de Desenvolvimento {{ estudante.nome }}</h2>
+
+    <div class="accordion" id="pdisAtivosAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="pdisAtivosHeading">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#pdisAtivosCollapse" aria-expanded="true" aria-controls="pdisAtivosCollapse">
+                    PDIs Ativos
+                </button>
+            </h2>
+            <div id="pdisAtivosCollapse" class="accordion-collapse collapse show" aria-labelledby="pdisAtivosHeading" data-bs-parent="#pdisAtivosAccordion">
+                <div class="accordion-body">
+                    {% for pdi in pdis %}
+                        {% if not pdi.concluido %}
+                            <div class="accordion" id="pdi{{ pdi.id }}Accordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="pdi{{ pdi.id }}Heading">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#pdi{{ pdi.id }}Collapse" aria-expanded="true" aria-controls="pdi{{ pdi.id }}Collapse">
+                                            {{ pdi.titulo }}
+                                        </button>
+                                    </h2>
+                                    <div id="pdi{{ pdi.id }}Collapse" class="accordion-collapse collapse" aria-labelledby="pdi{{ pdi.id }}Heading" data-bs-parent="#pdi{{ pdi.id }}Accordion">
+                                        <div class="accordion-body">
+                                            <ul>
+                                                {% for atividade in pdi.formulario_pdi.all %}
+                                                    <li>{{ atividade.habilidade }} - Nota: {{ atividade.nota|default:"0" }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion" id="pdisConcluidosAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="pdisConcluidosHeading">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#pdisConcluidosCollapse" aria-expanded="true" aria-controls="pdisConcluidosCollapse">
+                    PDIs Concluídos
+                </button>
+            </h2>
+            <div id="pdisConcluidosCollapse" class="accordion-collapse collapse show" aria-labelledby="pdisConcluidosHeading" data-bs-parent="#pdisConcluidosAccordion">
+                <div class="accordion-body">
+                    {% for pdi in pdis %}
+                        {% if pdi.concluido %}
+                            <div class="accordion" id="pdi{{ pdi.id }}Accordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="pdi{{ pdi.id }}Heading">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#pdi{{ pdi.id }}Collapse" aria-expanded="true" aria-controls="pdi{{ pdi.id }}Collapse">
+                                            {{ pdi.titulo }}
+                                        </button>
+                                    </h2>
+                                    <div id="pdi{{ pdi.id }}Collapse" class="accordion-collapse collapse" aria-labelledby="pdi{{ pdi.id }}Heading" data-bs-parent="#pdi{{ pdi.id }}Accordion">
+                                        <div class="accordion-body">
+                                            <ul>
+                                                {% for atividade in pdi.formulario_pdi.all %}
+                                                    <li>{{ atividade.habilidade }} - Nota: {{ atividade.nota|default:"0" }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-QKLt2Zj2OR6b7sF7pRl0nzYJTb/QbQpc8x2k63FT9Kg9So44rmOcnT5n86m2XTs4" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shC1OtI7Z9xHj2aVW+0R+etQ5Bk5DiEwlfJzN" crossorigin="anonymous"></script>
+
+{% endblock %}
