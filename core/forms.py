@@ -1,5 +1,6 @@
 from django import forms
-from .models import Pdi, Formulario, Competencia, Habilidade, Comunicacao
+from .models import Pdi, Formulario, Competencia, Habilidade, Comunicacao, Avaliacao
+from ckeditor.widgets import CKEditorWidget
 
 
 class FormularioForm(forms.ModelForm):
@@ -44,7 +45,7 @@ class PdiForm(forms.ModelForm):
                 attrs={"class": "form-control", "type": "date"}
             ),
             "descricao": forms.Textarea(
-                attrs={"class": "form-control custom-textarea", "rows": 10}
+                attrs={"class": "form-control custom-textarea", "rows": 10},
             ),
             "competencia": forms.Select(attrs={"class": "form-control"}),
             "arquivo": forms.FileInput(attrs={"class": "form-control"}),
@@ -74,5 +75,19 @@ class ComunicacaoForm(forms.ModelForm):
         }
         labels = {
             "menssagem": "Menssagem",
+            "arquivo": "Arquivo",
+        }
+
+
+class AvaliacaoForm(forms.ModelForm):
+    class Meta:
+        model = Avaliacao
+        fields = ["comentario", "arquivo"]
+        widgets = {
+            "comentario": forms.Textarea(attrs={"class": "form-control", "rows": 10}),
+            "arquivo": forms.FileInput(attrs={"class": "form-control"}),
+        }
+        labels = {
+            "comentario": "comentario",
             "arquivo": "Arquivo",
         }

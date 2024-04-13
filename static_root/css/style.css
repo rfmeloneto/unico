@@ -1,0 +1,71 @@
+body {
+    background-color: #f0f0f0;
+}
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.login-card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.margin-3{
+    margin: 3px;
+}
+ /* Estilize o conteúdo da página */
+ #content {
+    width: 80%; /* Defina a largura do conteúdo */
+    margin: 0 auto; /* Centralize o conteúdo horizontalmente */
+}
+
+/* Estilize os formulários */
+#pdi-form {
+    /* Adicione estilos conforme necessário */
+}
+
+/* Estilo padrão do botão */
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Efeito de hover */
+  .button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Efeito de clique */
+  .button:active {
+    background-color: #003d80;
+  }
+  
+.custom-textarea {
+    width: 100%; /* Define a largura para ocupar 100% da largura do elemento pai */
+    height: 150px; /* Ajusta a altura do textarea conforme necessário */
+    resize: none; /* Impede que o textarea seja redimensionado pelo usuário */
+    vertical-align: top; /* Alinha o texto ao topo do textarea */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.decoration{
+    text-decoration: none;
+}
+

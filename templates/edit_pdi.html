@@ -8,11 +8,12 @@
         {% csrf_token %}
         {{ form.as_p }}
         <div class="margin-3">
-            <button type="submit" class="button">Salvar Edição</button>
-            <a href="{% url 'pdi_list' student_id=estudante.id %}" class="button" style="text-decoration: none;">Cancelar Edição</a>
-            <a href="{% url 'add_activites' pdi_id=pdi.id %}" class="button" style="text-decoration: none;">Adicionar Atividade</a>
-            <a href="{% url 'add_comentario' pdi_id=pdi.id %}" class="button" style="text-decoration: none;">Adicionar Comentário</a>
-            <button id="delete-pdi" data-url="{% url 'delete_pdi' pdi.id %}" class ="button">Excluir PDI</button>
+            <button type="submit" class="button success">Salvar Edição</button>
+            <a href="{% url 'pdi_list' student_id=estudante.id %}" class="button warning" style="text-decoration: none;">Cancelar Edição</a>
+            <a href="{% url 'add_activites' pdi_id=pdi.id %}" class="button info" style="text-decoration: none;">Adicionar Atividade</a>
+            <a href="{% url 'add_comentario' pdi_id=pdi.id %}" class="button info" style="text-decoration: none;">Adicionar Comentário</a>
+            <button id="delete-pdi" data-url="{% url 'delete_pdi' pdi.id %}" class ="button danger">Excluir PDI</button>
+            <a href="{% url 'avaliar_pdi' pdi_id=pdi.id %}" class="button success" style="text-decoration: none;">Avaliar Pdi</a>
         </div>
     </form>
     <hr>
@@ -32,11 +33,29 @@
         {% endfor %}
     </div>
 
+    {% if arquivo.id %}
+    <div class="card-container">
+        {% for arquivo in arquivos %}
+            <div class="card">
+                <p>{{ arquivo.file }}</p>
+                
+                <a href="{% url 'download_files' arquivo.id %}" button class="button" style="text-decoration: none;">Baixar</button> </a>
+                
+                <br>
+            </div>
+            <hr>
+        {% endfor %}
+    </div>
+    {% endif %}
     <div class="card-container">
         {% for comentario in comentarios %}
             <div class="card">
                 <h3>{{ comentario.autor.user.first_name }}</h3>
                 <p>{{ comentario.menssagem }}</p>
+                {% if comentario.arquivo %}
+                <p>{{ comentario.arquivo.file }}</p>
+                <a href="{% url 'download_files' comentario.arquivo.id %}" button class="button" style="text-decoration: none;">Baixar</button> </a>
+                {% endif %}
             </div>
             <hr>
         {% endfor %}

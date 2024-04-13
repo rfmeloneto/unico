@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "core",
     "rest_framework",
+    "ckeditor",
 ]
 
 MIDDLEWARE = [
@@ -157,3 +158,5 @@ LOGGING = {
         },
     },
 }
+
+CKEDITOR_BASEPATH = "/static_root/ckeditor/ckeditor/"

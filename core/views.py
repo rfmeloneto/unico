@@ -19,19 +19,21 @@ from .models import (
     Pdi,
     Comunicacao,
     Formulario,
+    Avaliacao,
 )
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from rest_framework.views import Response
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from rest_framework.decorators import api_view
 from django.urls import include, path, reverse
 from rest_framework.viewsets import ModelViewSet
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic.edit import UpdateView
-from .forms import PdiForm, FormularioForm, ComunicacaoForm
+from .forms import PdiForm, FormularioForm, ComunicacaoForm, AvaliacaoForm
 from django.contrib.auth.decorators import login_required
+from django.http import FileResponse
 
 
 log = logging.getLogger(__name__)
@@ -130,10 +132,18 @@ def edit_pdi(request, pdi_id):
     comentarios = Comunicacao.objects.filter(pdi__id=pdi_id)
     estudante = pdi.estudante
     atividades = Formulario.objects.filter(pdi__id=pdi_id)
+    arquivos = Arquivo.objects.filter(pdi_arquivo__id=pdi_id)
     if request.method == "POST":
         form = PdiForm(request.POST, instance=pdi)
         if form.is_valid():
             form.save()
+            arquivo_enviado = request.FILES.get("arquivo")
+            if arquivo_enviado:
+                arquivo = Arquivo.objects.create(
+                    titulo=arquivo_enviado.name, file=arquivo_enviado
+                )
+                pdi.arquivo = arquivo
+            pdi.save()
             return redirect("pdi_list", student_id=pdi.estudante_id)
     else:
         form = PdiForm(instance=pdi)
@@ -146,6 +156,7 @@ def edit_pdi(request, pdi_id):
             "estudante": estudante,
             "atividades": atividades,
             "comentarios": comentarios,
+            "arquivos": arquivos,
         },
     )
 
@@ -192,11 +203,18 @@ def edit_activites(request, atividade_id):
 def add_comentario(request, pdi_id):
     form = ComunicacaoForm()
     user = request.user.integrante_user.first()
+    arquivos = Arquivo.objects.filter(comunicacao_arquivo__id=pdi_id)
     if request.method == "POST":
         form = ComunicacaoForm(request.POST)
         if form.is_valid():
             comunicacao = form.save(commit=False)
             pdi = Pdi.objects.get(pk=pdi_id)
+            arquivo_enviado = request.FILES.get("arquivo")
+            if arquivo_enviado:
+                arquivo = Arquivo.objects.create(
+                    titulo=arquivo_enviado.name, file=arquivo_enviado
+                )
+                comunicacao.arquivo = arquivo
             comunicacao.pdi = pdi
             comunicacao.autor = user
             comunicacao.save()
@@ -205,7 +223,42 @@ def add_comentario(request, pdi_id):
         request,
         "add_comentario.html",
         {
+            "arquivos_comunicacao": arquivos,
             "pdi_id": Pdi.objects.get(pk=pdi_id),
+            "form": form,
+        },
+    )
+
+
+def download_files(request, arquivo_id):
+    arquivo = Arquivo.objects.get(pk=arquivo_id)
+    file_path = arquivo.file.path
+    file_name = arquivo.file.name.split("/")[-1]
+
+    try:
+        return FileResponse(
+            open(file_path, "rb"), as_attachment=True, filename=file_name
+        )
+    except FileNotFoundError:
+        raise Http404("Arquivo não encontrado")
+
+
+def avaliar_pdi(request, pdi_id):
+    pdi = get_object_or_404(Pdi, pk=pdi_id)
+    if request.method == "POST":
+        form = AvaliacaoForm(request.POST)
+        if form.is_valid():
+            avaliacao = form.save(commit=False)
+            avaliacao.pdi = pdi
+            avaliacao.save()
+            return redirect("pdi_list", student_id=pdi.estudante_id)
+    else:
+        form = AvaliacaoForm()
+    return render(
+        request,
+        "avaliar_pdi.html",
+        {
+            "pdi": pdi,
             "form": form,
         },
     )

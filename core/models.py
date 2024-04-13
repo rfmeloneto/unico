@@ -165,6 +165,7 @@ class Pdi(models.Model):
             print("A data final não pode ser maior que a incial")
             return "A data final não pode ser maior que a incial"
         else:
+
             super().save(*args, **kwargs)
 
 
@@ -193,6 +194,7 @@ class Avaliacao(models.Model):
     formulario = models.ManyToManyField(
         "Formulario", related_name="avaliacao_formularios"
     )
+    comentario = models.TextField(null=True, blank=True)
     arquivo = models.ForeignKey(
         Arquivo,
         related_name="avaliacao_arquivo",

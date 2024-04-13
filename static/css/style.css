@@ -68,4 +68,16 @@ body {
 .decoration{
     text-decoration: none;
 }
+.waring{
+    color: yellow;
+}
+.danger{
+    color: red;
+}
+.info{
+    color: blue;
+}
+.success{
+    color: green;
+}
 
