@@ -1,4 +1,6 @@
 from django import forms
+
+from core.choices import AVALIAR_PDI_CHOICES
 from .models import Pdi, Formulario, Competencia, Habilidade, Comunicacao, Avaliacao
 from ckeditor.widgets import CKEditorWidget
 
@@ -62,6 +64,52 @@ class PdiForm(forms.ModelForm):
             "concluido": "Concluído",
         }
 
+        def __init__(self, *args, **kwargs):
+            super(PdiForm, self).__init__(*args, **kwargs)
+            if self.instance.pk:
+                self.initial["data_inicial"] = self.instance.data_inicial
+                self.initial["data_final"] = self.instance.data_final
+
+
+# class PdiForm(forms.ModelForm):
+#     class Meta:
+#         model = Pdi
+#         fields = [
+#             "titulo",
+#             "data_inicial",
+#             "data_final",
+#             "descricao",
+#             "competencia",
+#             "arquivo",
+#             "ativo",
+#             "concluido",
+#         ]
+#         widgets = {
+#             "titulo": forms.TextInput(attrs={"class": "form-control"}),
+#             "data_inicial": forms.DateInput(
+#                 attrs={"class": "form-control", "type": "date"}
+#             ),
+#             "data_final": forms.DateInput(
+#                 attrs={"class": "form-control", "type": "date"}
+#             ),
+#             "descricao": forms.Textarea(
+#                 attrs={"class": "form-control custom-textarea", "rows": 10},
+#             ),
+#             "competencia": forms.Select(attrs={"class": "form-control"}),
+#             "arquivo": forms.FileInput(attrs={"class": "form-control"}),
+#             "ativo": forms.CheckboxInput(),
+#             "concluido": forms.CheckboxInput(),
+#         }
+#         labels = {
+#             "titulo": "Título",
+#             "data_inicial": "Data Inicial",
+#             "data_final": "Data Final",
+#             "descricao": "Descrição",
+#             "arquivo": "Arquivo",
+#             "ativo": "Ativo",
+#             "concluido": "Concluído",
+#         }
+
 
 class ComunicacaoForm(forms.ModelForm):
     class Meta:
@@ -80,6 +128,11 @@ class ComunicacaoForm(forms.ModelForm):
 
 
 class AvaliacaoForm(forms.ModelForm):
+    nota = forms.ChoiceField(
+        choices=AVALIAR_PDI_CHOICES,
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+
     class Meta:
         model = Avaliacao
         fields = ["comentario", "arquivo"]

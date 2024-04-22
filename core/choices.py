@@ -62,3 +62,11 @@ COMPETENCIA_CHOICES = [
     (9, "Autoconhecimento e autocuidado"),
     (10, "Empatia e cooperação"),
 ]
+
+AVALIAR_PDI_CHOICES = [
+    (1, "Muito Satisfatório"),
+    (2, "Satisfatório"),
+    (3, "Indiferente"),
+    (4, "Insatisfatório"),
+    (5, "Muito Insatisfatório"),
+]

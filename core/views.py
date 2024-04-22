@@ -267,10 +267,17 @@ def avaliar_pdi(request, pdi_id):
 def development_panel(request, estudante_id):
     estudante = get_object_or_404(Estudante, pk=estudante_id)
     pdis = Pdi.objects.filter(estudante=estudante_id)
+    avaliacoes = Avaliacao.objects.filter(pdi__estudante=estudante_id)
+    atividades = Formulario.objects.filter(pdi__estudante=estudante_id)
     return render(
         request,
         "development_panel.html",
-        {"estudante": estudante, "pdis": pdis},
+        {
+            "estudante": estudante,
+            "pdis": pdis,
+            "avaliacoes": avaliacoes,
+            "atividades": atividades,
+        },
     )
 
 

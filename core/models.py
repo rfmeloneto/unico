@@ -11,6 +11,7 @@ from core.choices import (
     LOCALIZACAO_CHOICES,
     DEP_ADM_CHOICES,
     COMPETENCIA_CHOICES,
+    AVALIAR_PDI_CHOICES,
 )
 
 log = logging.getLogger(__name__)
@@ -194,6 +195,7 @@ class Avaliacao(models.Model):
     formulario = models.ManyToManyField(
         "Formulario", related_name="avaliacao_formularios"
     )
+    nota = models.IntegerField(choices=AVALIAR_PDI_CHOICES, blank=False, null=False)
     comentario = models.TextField(null=True, blank=True)
     arquivo = models.ForeignKey(
         Arquivo,
