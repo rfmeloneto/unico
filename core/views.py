@@ -1,4 +1,8 @@
 import logging
+from collections import defaultdict
+import json
+from datetime import date
+from django.db.models import Sum, Count, Q, F, Avg
 from pyexpat.errors import messages
 from django.shortcuts import get_object_or_404, render
 from .serializer import (
@@ -250,6 +254,7 @@ def avaliar_pdi(request, pdi_id):
         if form.is_valid():
             avaliacao = form.save(commit=False)
             avaliacao.pdi = pdi
+            avaliacao.nota = form.cleaned_data["nota"]
             avaliacao.save()
             return redirect("pdi_list", student_id=pdi.estudante_id)
     else:
@@ -269,10 +274,39 @@ def development_panel(request, estudante_id):
     pdis = Pdi.objects.filter(estudante=estudante_id)
     avaliacoes = Avaliacao.objects.filter(pdi__estudante=estudante_id)
     atividades = Formulario.objects.filter(pdi__estudante=estudante_id)
+    average_notas_por_habilidade = Formulario.objects.values(
+        "habilidade__habilidade"
+    ).annotate(avg_nota=Avg("nota"))
+    media_habilidades = {
+        item["habilidade__habilidade"]: item["avg_nota"]
+        for item in average_notas_por_habilidade
+    }
+
+    media_geral = Avaliacao.objects.aggregate(Avg("nota"))["nota__avg"] or 0
+
+    total_pdis = Pdi.objects.filter(estudante=estudante_id).count()
+
+    total_pdis_abertos = Pdi.objects.filter(estudante=estudante_id, concluido=False)
+    total_pdis_concluidos = Pdi.objects.filter(estudante=estudante_id, concluido=True)
+
+    pdi_avaliacao = Avaliacao.objects.filter(pdi__estudante=estudante_id)
+
+    nota_counts = defaultdict(int)
+
+    for avaliacao in pdi_avaliacao:
+        nota = avaliacao.get_nota_display()
+        nota_counts[nota] += 1
+
     return render(
         request,
         "development_panel.html",
         {
+            "nota_counts": nota_counts,
+            "total_pdis_concluidos": total_pdis_concluidos,
+            "total_pdis_abertos": total_pdis_abertos,
+            "total_pdis": total_pdis,
+            "media_geral": media_geral,
+            "media_habilidades": media_habilidades,
             "estudante": estudante,
             "pdis": pdis,
             "avaliacoes": avaliacoes,

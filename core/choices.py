@@ -64,9 +64,9 @@ COMPETENCIA_CHOICES = [
 ]
 
 AVALIAR_PDI_CHOICES = [
-    (1, "Muito Satisfatório"),
-    (2, "Satisfatório"),
+    (5, "Muito Satisfatório"),
+    (4, "Satisfatório"),
     (3, "Indiferente"),
-    (4, "Insatisfatório"),
-    (5, "Muito Insatisfatório"),
+    (2, "Insatisfatório"),
+    (1, "Muito Insatisfatório"),
 ]

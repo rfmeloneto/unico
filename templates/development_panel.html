@@ -5,82 +5,67 @@
 <div id="content">
     <h2>Painel de Desenvolvimento {{ estudante.nome }}</h2>
 
-    <div class="accordion" id="pdisAtivosAccordion">
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="pdisAtivosHeading">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#pdisAtivosCollapse" aria-expanded="false" aria-controls="pdisAtivosCollapse">
-                    PDIs Ativos
-                </button>
-            </h2>
-            <div id="pdisAtivosCollapse" class="accordion-collapse collapse" aria-labelledby="pdisAtivosHeading" data-bs-parent="#pdisAtivosAccordion">
-                <div class="accordion-body">
-                    {% for pdi in pdis %}
-                        {% if not pdi.concluido %}
-                            <div class="accordion" id="pdi{{ pdi.id }}Accordion">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="pdi{{ pdi.id }}Heading">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#pdi{{ pdi.id }}Collapse" aria-expanded="false" aria-controls="pdi{{ pdi.id }}Collapse">
-                                            {{ pdi.titulo }}
-                                        </button>
-                                    </h2>
-                                    <div id="pdi{{ pdi.id }}Collapse" class="accordion-collapse collapse" aria-labelledby="pdi{{ pdi.id }}Heading" data-bs-parent="#pdi{{ pdi.id }}Accordion">
-                                        <div class="accordion-body">
-                                            <ul>
-                                                {% for atividade in pdi.formulario_pdi.all %}
-                                                    <li>{{ atividade.habilidade }} - Nota: {{ atividade.nota|default:"0" }}</li>
-                                                {% endfor %}
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
+    <!-- Cards de Média por Habilidade -->
+    <div class="row mb-4">
+        {% for habilidade, media in media_habilidades.items %}
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ habilidade }}</h5>
+                        <p class="card-text">Média: {{ media }}</p>
+                    </div>
                 </div>
             </div>
+        {% endfor %}
+    </div>
+
+    <!-- Card Destaque com Média Geral -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Média Geral</h5>
+            <p class="card-text">{{ media_geral }}</p>
         </div>
     </div>
 
-    <div class="accordion" id="pdisConcluidosAccordion">
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="pdisConcluidosHeading">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#pdisConcluidosCollapse" aria-expanded="false" aria-controls="pdisConcluidosCollapse">
-                    PDIs Concluídos
-                </button>
-            </h2>
-            <div id="pdisConcluidosCollapse" class="accordion-collapse collapse" aria-labelledby="pdisConcluidosHeading" data-bs-parent="#pdisConcluidosAccordion">
-                <div class="accordion-body">
-                    {% for pdi in pdis %}
-                        {% if pdi.concluido %}
-                            <div class="accordion" id="pdi{{ pdi.id }}Accordion">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="pdi{{ pdi.id }}Heading">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#pdi{{ pdi.id }}Collapse" aria-expanded="false" aria-controls="pdi{{ pdi.id }}Collapse">
-                                            {{ pdi.titulo }}
-                                        </button>
-                                    </h2>
-                                    <div id="pdi{{ pdi.id }}Collapse" class="accordion-collapse collapse" aria-labelledby="pdi{{ pdi.id }}Heading" data-bs-parent="#pdi{{ pdi.id }}Accordion">
-                                        <div class="accordion-body">
-                                            <ul>
-                                                {% for atividade in pdi.formulario_pdi.all %}
-                                                    <li>{{ atividade.habilidade }} - Nota: {{ atividade.nota|default:"0" }}</li>
-                                                {% endfor %}
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
+    <!-- Card com Total de PDIs em Aberto e Concluídos -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Total de PDIs</h5>
+            <p class="card-text">Abertos: {{ total_pdis_abertos.count }}</p>
+            <p class="card-text">Concluídos: {{ total_pdis_concluidos.count }}</p>
         </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-QKLt2Zj2OR6b7sF7pRl0nzYJTb/QbQpc8x2k63FT9Kg9So44rmOcnT5n86m2XTs4" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shC1OtI7Z9xHj2aVW+0R+etQ5Bk5DiEwlfJzN" crossorigin="anonymous"></script>
+
+<!-- Gráfico de Evolução da Nota pela Data -->
+<canvas id="graficoNotaData"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
+<script>
+    var data_lista = JSON.parse('{{ data_lista_json | safe }}');
+    var nota_lista = JSON.parse('{{ nota_lista_json | safe }}');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data_lista,
+            datasets: [{
+                label: 'Nota Média',
+                data: nota_lista,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+            }],
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                    },
+                }],
+            },
+        },
+    });
+</script>
+
 
 {% endblock %}
-
-
