@@ -35,7 +35,7 @@ from django.urls import include, path, reverse
 from rest_framework.viewsets import ModelViewSet
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic.edit import UpdateView
-from .forms import PdiForm, FormularioForm, ComunicacaoForm, AvaliacaoForm
+from .forms import PdiForm, FormularioForm, ComunicacaoForm, AvaliacaoForm, PdiEditForm
 from django.contrib.auth.decorators import login_required
 from django.http import FileResponse
 
@@ -137,8 +137,9 @@ def edit_pdi(request, pdi_id):
     estudante = pdi.estudante
     atividades = Formulario.objects.filter(pdi__id=pdi_id)
     arquivos = Arquivo.objects.filter(pdi_arquivo__id=pdi_id)
+    avaliacoes = Avaliacao.objects.filter(pdi__id=pdi_id)
     if request.method == "POST":
-        form = PdiForm(request.POST, instance=pdi)
+        form = PdiEditForm(request.POST, instance=pdi)
         if form.is_valid():
             form.save()
             arquivo_enviado = request.FILES.get("arquivo")
@@ -150,11 +151,12 @@ def edit_pdi(request, pdi_id):
             pdi.save()
             return redirect("pdi_list", student_id=pdi.estudante_id)
     else:
-        form = PdiForm(instance=pdi)
+        form = PdiEditForm(instance=pdi)
     return render(
         request,
         "edit_pdi.html",
         {
+            "avaliacoes": avaliacoes,
             "form": form,
             "pdi": pdi,
             "estudante": estudante,
@@ -256,7 +258,8 @@ def avaliar_pdi(request, pdi_id):
             avaliacao.pdi = pdi
             avaliacao.nota = form.cleaned_data["nota"]
             avaliacao.save()
-            return redirect("pdi_list", student_id=pdi.estudante_id)
+            # return redirect("pdi_list", student_id=pdi.estudante_id)
+            return redirect("edit_pdi", pdi_id=pdi.id)
     else:
         form = AvaliacaoForm()
     return render(

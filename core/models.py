@@ -208,6 +208,10 @@ class Avaliacao(models.Model):
     def __str__(self):
         return f"{self.pdi} {self.arquivo}"
 
+    def save(self, *args, **kwargs):
+        Avaliacao.objects.filter(pdi=self.pdi).delete()
+        super().save(*args, **kwargs)
+
 
 class Formulario(models.Model):
     pdi = models.ForeignKey(

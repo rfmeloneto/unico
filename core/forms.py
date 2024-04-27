@@ -41,7 +41,10 @@ class PdiForm(forms.ModelForm):
         widgets = {
             "titulo": forms.TextInput(attrs={"class": "form-control"}),
             "data_inicial": forms.DateInput(
-                attrs={"class": "form-control", "type": "date"}
+                attrs={
+                    "class": "form-control",
+                    "type": "date",
+                },
             ),
             "data_final": forms.DateInput(
                 attrs={"class": "form-control", "type": "date"}
@@ -64,11 +67,41 @@ class PdiForm(forms.ModelForm):
             "concluido": "Concluído",
         }
 
-        def __init__(self, *args, **kwargs):
-            super(PdiForm, self).__init__(*args, **kwargs)
-            if self.instance.pk:
-                self.initial["data_inicial"] = self.instance.data_inicial
-                self.initial["data_final"] = self.instance.data_final
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.pk:
+            self.fields["data_inicial"].initial = self.instance.data_inicial
+            self.fields["data_final"].initial = self.instance.data_final
+
+
+class PdiEditForm(forms.ModelForm):
+    class Meta:
+        model = Pdi
+        fields = [
+            "titulo",
+            "descricao",
+            "competencia",
+            "arquivo",
+            "ativo",
+            "concluido",
+        ]
+        widgets = {
+            "titulo": forms.TextInput(attrs={"class": "form-control"}),
+            "descricao": forms.Textarea(
+                attrs={"class": "form-control custom-textarea", "rows": 10},
+            ),
+            "competencia": forms.Select(attrs={"class": "form-control"}),
+            "arquivo": forms.FileInput(attrs={"class": "form-control"}),
+            "ativo": forms.CheckboxInput(),
+            "concluido": forms.CheckboxInput(),
+        }
+        labels = {
+            "titulo": "Título",
+            "descricao": "Descrição",
+            "arquivo": "Arquivo",
+            "ativo": "Ativo",
+            "concluido": "Concluído",
+        }
 
 
 class ComunicacaoForm(forms.ModelForm):

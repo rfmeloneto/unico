@@ -9,8 +9,8 @@
             {% csrf_token %}
             {{ form.as_p }}
             <div class="margin-3">
-            <button type="submit" class="button" >Salvar</button>
-            <a href="{% url 'pdi_list' student_id=estudante.id %}" class="button">Cancelar</a>
+            <button type="submit" class="button info" >Salvar</button>
+            <a href="{% url 'pdi_list' student_id=estudante.id %}" class="button danger">Cancelar</a>
             </div>
         </form>
 

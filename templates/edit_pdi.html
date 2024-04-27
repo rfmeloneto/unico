@@ -3,7 +3,7 @@
 {% block content %}
 
 <div id="content">
-    <h2>PDI {{ pdi.titulo }} - para {{ estudante.nome }}</h2>
+    <h2>PDI {{ pdi.titulo }} - para {{ estudante.nome }} - {{ pdi.data_inicial }} - {{ pdi.data_final }}</h2>
     <form id="pdi-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
@@ -17,6 +17,18 @@
         </div>
     </form>
     <hr>
+    {% if avaliacoes %}
+    <div class="card-container">
+        <h3>Avaliação</h3>
+        {% for avaliacao in avaliacoes %}
+            <div class="card">
+                <p>Comentário : {{ avaliacao.comentario }}</p>
+                <p>Nota : {{ avaliacao.nota }}</p>            
+        {% endfor %}
+    </div>
+    {% endif %}
+    </div>
+    <br>
     <div class="card-container">
         <h3>Atividades</h3>
         {% for atividade in atividades %}
@@ -37,14 +49,14 @@
         {% endfor %}
     </div>
 
-    {% if arquivo.id %}
+    {% if arquivo %}
     <div class="card-container">
         <h3>Arquivos anexados ao PDI</h3>
         {% for arquivo in arquivos %}
             <div class="card">
                 <p>{{ arquivo.file }}</p>
                 
-                <a href="{% url 'download_files' arquivo.id %}" button class="button" style="text-decoration: none;">Baixar</button> </a>
+                <a href="{% url 'download_files' arquivo.id %}" button class="button" style="text-decoration: none; ">Baixar</button> </a>
                 
                 <br>
             </div>
@@ -62,7 +74,7 @@
                 <h6>Arquivo Anexado por {{ comentario.autor.user.first_name }}</h6>
                 <p>Arquivo : {{ comentario.arquivo.file }}</p>
                 <br>
-                <a href="{% url 'download_files' comentario.arquivo.id %}" button class="button" style="text-decoration: none;">Baixar</button> </a>
+                <a href="{% url 'download_files' comentario.arquivo.id %}" button class="button info" style="text-decoration: none;">Baixar</button> </a>
                 {% endif %}
             </div>
             <hr>
