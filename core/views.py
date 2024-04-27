@@ -291,27 +291,20 @@ def development_panel(request, estudante_id):
     ]
     avaliacoes_json = json.dumps(avaliacoes_json)
 
-    media_geral = Avaliacao.objects.aggregate(Avg("nota"))["nota__avg"] or 0
+    media_geral = avaliacoes.aggregate(Avg("nota"))["nota__avg"] or 0
 
     total_pdis = Pdi.objects.filter(estudante=estudante_id).count()
 
     total_pdis_abertos = Pdi.objects.filter(estudante=estudante_id, concluido=False)
     total_pdis_concluidos = Pdi.objects.filter(estudante=estudante_id, concluido=True)
 
-    pdi_avaliacao = Avaliacao.objects.filter(pdi__estudante=estudante_id)
-
-    nota_counts = defaultdict(int)
-
-    for avaliacao in pdi_avaliacao:
-        nota = avaliacao.get_nota_display()
-        nota_counts[nota] += 1
 
     return render(
         request,
         "development_panel.html",
         {
             "avaliacoes_json": avaliacoes_json,
-            "nota_counts": nota_counts,
+            # "nota_counts": nota_counts,
             "total_pdis_concluidos": total_pdis_concluidos,
             "total_pdis_abertos": total_pdis_abertos,
             "total_pdis": total_pdis,
