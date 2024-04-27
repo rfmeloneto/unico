@@ -36,36 +36,54 @@
         </div>
     </div>
 
+    <!-- Adicione o elemento canvas com o ID bar-chart -->
+    <canvas id="bar-chart" width="800" height="400"></canvas>
 
-<!-- Gráfico de Evolução da Nota pela Data -->
-<canvas id="graficoNotaData"></canvas>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
-<script>
-    var data_lista = JSON.parse('{{ data_lista_json | safe }}');
-    var nota_lista = JSON.parse('{{ nota_lista_json | safe }}');
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: data_lista,
-            datasets: [{
-                label: 'Nota Média',
-                data: nota_lista,
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1,
-            }],
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                    },
-                }],
-            },
-        },
-    });
-</script>
+    <!-- Inclua o Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- Elemento para armazenar os dados das avaliações dos PDIs -->
+    <div id="chart-data" data-avaliacoes="{{ avaliacoes_json }}"></div>
+
+    <!-- Script JavaScript para renderizar o gráfico -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var ctx = document.getElementById('bar-chart').getContext('2d');
+    
+            var chartDataElement = document.getElementById('chart-data');
+            var avaliacoesJSON = chartDataElement.getAttribute('data-avaliacoes');
+            var avaliacoes = JSON.parse(avaliacoesJSON);
+    
+            var labels = [];
+            var data = [];
+    
+            avaliacoes.forEach(function(avaliacao) {
+                labels.push(avaliacao.pdi_titulo);
+                data.push(avaliacao.nota);
+            });
+    
+            var chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Notas de Avaliação',
+                        data: data,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</div>
 
 {% endblock %}
