@@ -4,6 +4,7 @@
 
 <div id="content">
     <h2>PDI {{ pdi.titulo }} - para {{ estudante.nome }} - {{ pdi.data_inicial }} - {{ pdi.data_final }}</h2>
+    <button class="button info"><a style="text-decoration: none; color: white" href="http://127.0.0.1:8000/" target=”_blank”>Assistente IA</a></button>
     <form id="pdi-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
