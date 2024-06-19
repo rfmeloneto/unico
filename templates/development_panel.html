@@ -6,7 +6,6 @@
     <h2>Painel de Desenvolvimento {{ estudante.nome }}</h2>
 
     <div class="row"> 
-
         <div class="col">
             <!-- Card com Total de PDIs em Aberto e Concluídos -->
             <div class="card mb-4">
@@ -19,18 +18,18 @@
         </div>
 
         <div class="col">
-        <!-- Card Destaque com Média Geral -->
-        <div class="card mb-4" style="width: fit-content;">
-            <div class="card-body">
-                <h5 class="card-title">Média Geral</h5>
-                <p class="card-text">{{ media_geral }}</p>
+            <!-- Card Destaque com Média Geral -->
+            <div class="card mb-4" style="width: fit-content;">
+                <div class="card-body">
+                    <h5 class="card-title">Média Geral</h5>
+                    <p class="card-text">{{ media_geral }}</p>
+                </div>
             </div>
         </div>
-    
-        </div>
-    
     </div>
-  <hr>
+    
+    <hr>
+    
     <!-- Cards de Média por Habilidade -->
     <div class="row mb-4 mt-4">
         {% for habilidade, media in media_habilidades.items %}
@@ -42,13 +41,13 @@
                     </div>
                 </div>
             </div>
-            
         {% endfor %}
     </div>
-   <hr> 
+    
+    <hr> 
 
-       <!-- Cards de Média por Competencia -->
-       <div class="row mb-4 mt-4">
+    <!-- Cards de Média por Competencia -->
+    <!-- <div class="row mb-4 mt-4">
         {% for competencia, media in media_competencias.items %}
             <div class="col-md-3">
                 <div class="card">
@@ -58,13 +57,17 @@
                     </div>
                 </div>
             </div>
-            
         {% endfor %}
-    </div>
-   <hr> 
+    </div> -->
+     <!-- Gráfico de Médias por Competência -->
+     <canvas id="competencias-chart" width="800" height="400"></canvas>
+    
+    <hr> 
 
-    <!-- Adicione o elemento canvas com o ID bar-chart -->
+    <!-- Gráfico de Notas de Avaliação -->
     <canvas id="bar-chart" width="800" height="400"></canvas>
+
+   
 
     <!-- Inclua o Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -72,11 +75,14 @@
     <!-- Elemento para armazenar os dados das avaliações dos PDIs -->
     <div id="chart-data" data-avaliacoes="{{ avaliacoes_json }}"></div>
 
-    <!-- Script JavaScript para renderizar o gráfico -->
+    <!-- Elemento para armazenar os dados das médias das competências -->
+    <div id="competencias-data" data-medias="{{ media_competencias_json }}"></div>
+
+    <!-- Script JavaScript para renderizar os gráficos -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Gráfico de Notas de Avaliação
             var ctx = document.getElementById('bar-chart').getContext('2d');
-    
             var chartDataElement = document.getElementById('chart-data');
             var avaliacoesJSON = chartDataElement.getAttribute('data-avaliacoes');
             var avaliacoes = JSON.parse(avaliacoesJSON);
@@ -105,6 +111,52 @@
                     scales: {
                         y: {
                             beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Gráfico de Médias por Competência
+            var competenciasCtx = document.getElementById('competencias-chart').getContext('2d');
+            var competenciasElement = document.getElementById('competencias-data');
+            var medias = JSON.parse(competenciasElement.getAttribute('data-medias'));
+
+            // Competências predefinidas
+            var competencias = [
+                "Empatia e cooperação",
+                "Autoconhecimento e autocuidado",
+                "Autonomia",
+                "Autogestão",
+                "Reconhecimento",
+                "Cultura digital",
+                "Comunicação",
+                "Senso estético e repertório cultural",
+                "Pensamento científico, crítico e criativo",
+                "Conhecimento"
+            ];
+
+            // Mapeia as médias das competências predefinidas
+            var competenciasData = competencias.map(function(competencia) {
+                return medias[competencia] || 0;
+            });
+
+            var competenciasChart = new Chart(competenciasCtx, {
+                type: 'bar',
+                data: {
+                    labels: competencias,
+                    datasets: [{
+                        label: 'Média por Competência',
+                        data: competenciasData,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10  // Supondo que a média máxima seja 10
                         }
                     }
                 }

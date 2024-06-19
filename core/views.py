@@ -303,28 +303,46 @@ def development_panel(request, estudante_id):
     total_pdis_abertos = Pdi.objects.filter(estudante=estudante_id, concluido=False)
     total_pdis_concluidos = Pdi.objects.filter(estudante=estudante_id, concluido=True)
 
+    # media_competencias = {}
+    # notas = []
+    # for pdi in pdis:
+    #     avaliacao = Avaliacao.objects.get(pdi=pdi)
+    #     if avaliacao.nota:
+    #         notas.append(avaliacao.nota)
+    #     if pdi.competencia.competencia in media_competencias:
+    #         media_competencias[pdi.competencia.competencia] += avaliacao.nota
+    #     else:
+    #         media_competencias[pdi.competencia.get_competencia_display()] = (
+    #             avaliacao.nota
+    #         )
+    # if notas:
+    #     media_competencias[pdi.competencia.get_competencia_display()] = sum(
+    #         notas
+    #     ) / len(notas)
+
+    # Cálculo das médias das competências
     media_competencias = {}
-    notas = []
     for pdi in pdis:
         avaliacao = Avaliacao.objects.get(pdi=pdi)
-        if avaliacao.nota:
-            notas.append(avaliacao.nota)
-        if pdi.competencia.competencia in media_competencias:
-            media_competencias[pdi.competencia.competencia] += avaliacao.nota
+        competencia_display = pdi.competencia.get_competencia_display()
+        if competencia_display in media_competencias:
+            media_competencias[competencia_display].append(avaliacao.nota)
         else:
-            media_competencias[pdi.competencia.get_competencia_display()] = (
-                avaliacao.nota
-            )
-    if notas:
-        media_competencias[pdi.competencia.get_competencia_display()] = sum(
-            notas
-        ) / len(notas)
+            media_competencias[competencia_display] = [avaliacao.nota]
+
+    # Calcular a média de cada competência
+    for competencia in media_competencias:
+        notas = media_competencias[competencia]
+        media_competencias[competencia] = sum(notas) / len(notas)
+
+    media_competencias_json = json.dumps(media_competencias)
 
     return render(
         request,
         "development_panel.html",
         {
             "media_competencias": media_competencias,
+            "media_competencias_json": media_competencias_json,
             "media_habilidade_json": media_habilidade_json,
             "avaliacoes_json": avaliacoes_json,
             # "nota_counts": nota_counts,

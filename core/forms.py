@@ -3,8 +3,16 @@ from django import forms
 from core.choices import AVALIAR_PDI_CHOICES
 from .models import Pdi, Formulario, Comunicacao, Avaliacao
 
+NOTA_CHOICES = [(i, str(i)) for i in range(11)]
+
 
 class FormularioForm(forms.ModelForm):
+    nota = forms.TypedChoiceField(
+        choices=NOTA_CHOICES,
+        coerce=int,
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+
     class Meta:
         model = Formulario
         fields = ["habilidade", "competencia", "estrategia", "nota"]
@@ -14,7 +22,7 @@ class FormularioForm(forms.ModelForm):
             "estrategia": forms.Textarea(
                 attrs={"class": "form-control custom-textarea", "rows": 100}
             ),
-            "nota": forms.NumberInput(attrs={"class": "form-control"}),
+            # "nota": forms.NumberInput(attrs={"class": "form-control"}),
         }
         labels = {
             "habilidade": "Habilidade",
@@ -25,6 +33,29 @@ class FormularioForm(forms.ModelForm):
 
 
 class PdiForm(forms.ModelForm):
+    data_inicial = forms.DateField(
+        input_formats=["%d/%m/%Y"],
+        widget=forms.DateInput(
+            format="%d/%m/%Y",
+            attrs={
+                "class": "form-control",
+                "type": "text",  # Usar "text" para permitir customização do formato de exibição
+                "placeholder": "dd/mm/yyyy",
+            },
+        ),
+    )
+    data_final = forms.DateField(
+        input_formats=["%d/%m/%Y"],
+        widget=forms.DateInput(
+            format="%d/%m/%Y",
+            attrs={
+                "class": "form-control",
+                "type": "text",  # Usar "text" para permitir customização do formato de exibição
+                "placeholder": "dd/mm/yyyy",
+            },
+        ),
+    )
+
     class Meta:
         model = Pdi
         fields = [
@@ -39,15 +70,6 @@ class PdiForm(forms.ModelForm):
         ]
         widgets = {
             "titulo": forms.TextInput(attrs={"class": "form-control"}),
-            "data_inicial": forms.DateInput(
-                attrs={
-                    "class": "form-control",
-                    "type": "date",
-                },
-            ),
-            "data_final": forms.DateInput(
-                attrs={"class": "form-control", "type": "date"}
-            ),
             "descricao": forms.Textarea(
                 attrs={"class": "form-control custom-textarea", "rows": 100},
             ),
@@ -69,8 +91,13 @@ class PdiForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance.pk:
-            self.fields["data_inicial"].initial = self.instance.data_inicial
-            self.fields["data_final"].initial = self.instance.data_final
+            # Formatando as datas iniciais para a exibição no formulário
+            self.fields["data_inicial"].initial = self.instance.data_inicial.strftime(
+                "%d/%m/%Y"
+            )
+            self.fields["data_final"].initial = self.instance.data_final.strftime(
+                "%d/%m/%Y"
+            )
 
 
 class PdiEditForm(forms.ModelForm):
