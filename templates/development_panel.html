@@ -4,7 +4,33 @@
 
 <div id="content" class="p-5">
     <h2>Painel de Desenvolvimento {{ estudante.nome }}</h2>
-  
+
+    <div class="row"> 
+
+        <div class="col">
+            <!-- Card com Total de PDIs em Aberto e Concluídos -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Total de PDIs</h5>
+                    <p class="card-text">Abertos: {{ total_pdis_abertos.count }}</p>
+                    <p class="card-text">Concluídos: {{ total_pdis_concluidos.count }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col">
+        <!-- Card Destaque com Média Geral -->
+        <div class="card mb-4" style="width: fit-content;">
+            <div class="card-body">
+                <h5 class="card-title">Média Geral</h5>
+                <p class="card-text">{{ media_geral }}</p>
+            </div>
+        </div>
+    
+        </div>
+    
+    </div>
+  <hr>
     <!-- Cards de Média por Habilidade -->
     <div class="row mb-4 mt-4">
         {% for habilidade, media in media_habilidades.items %}
@@ -19,32 +45,8 @@
             
         {% endfor %}
     </div>
-    
-<div class="row"> 
+   <hr> 
 
-    <div class="col">
-    <!-- Card Destaque com Média Geral -->
-    <div class="card mb-4" style="width: fit-content;">
-        <div class="card-body">
-            <h5 class="card-title">Média Geral</h5>
-            <p class="card-text">{{ media_geral }}</p>
-        </div>
-    </div>
-
-    </div>
-
-    <div class="col">
-    <!-- Card com Total de PDIs em Aberto e Concluídos -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">Total de PDIs</h5>
-            <p class="card-text">Abertos: {{ total_pdis_abertos.count }}</p>
-            <p class="card-text">Concluídos: {{ total_pdis_concluidos.count }}</p>
-        </div>
-    </div>
-</div>
-
-</div>
     <!-- Adicione o elemento canvas com o ID bar-chart -->
     <canvas id="bar-chart" width="800" height="400"></canvas>
 
