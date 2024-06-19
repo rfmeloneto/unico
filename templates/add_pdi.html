@@ -2,9 +2,20 @@
 {% extends 'base.html' %}
 {% block title %}Adicionar PDI{% endblock %}
 {% block content %}
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
 
     <div id="content" class="p-5">
         <h2>Adicionar PDI para {{ estudante.nome }}</h2>
+        
+            <div id="content" class="p-5">
+                <div class="ia d-flex justify-content-center align-items-center">
+                    <a style="text-decoration: none; color: white" href="http://127.0.0.1:12345/" target=”_blank”>
+                        <i class="material-icons" style="font-size: 45px; color: #004A7C">account_box</i>
+                    </a>
+                    <h6>Assistente IA</h6>
+                    </div>
         <button class="button info"><a style="text-decoration: none; color: white" href="http://127.0.0.1:12345/" target=”_blank”>Assistente IA</a></button>
         <form id="pdi-form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
