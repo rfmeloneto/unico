@@ -81,3 +81,6 @@ body {
 .custom-header{
     background-color: lightseagreen;
 }
+.elevation{
+    box-shadow: 0 40px 50px rgba(0, 0, 0, 0.1);
+}

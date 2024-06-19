@@ -1,13 +1,42 @@
 {% extends 'base.html' %}
 {% block title %}Estudantes{% endblock %}
 {% block content %}
-<div class="container p-5">
-    <div class="custom-header">
-        <h1 class="text-center mb-4">Selecione o Estudante</h1>
+{% load static %}
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<style>
+
+    body{
+        background-color: #7b9fad;
+        
+    }
+    .elevation{
+    box-shadow: 0 40px 50px rgba(0, 0, 0, 0.1);
+    
+}
+
+</style> 
+
+<div class="row  mt-5">
+    <div class="d-flex justify-content-center"></div>
+    <div class="col-3">
+    </div>    
+    <div class="col">
+    <h1 class="text-end">Cadastro de Estudantes</h1>
     </div>
+    <div class="col ml-4 mt-2">
+    <i class="material-icons">
+        person_search
+    </i>
+    </div>
+</div>  
+</div>
+<div class="container p-5">
     <div class="row">
         {% for student in students %}
         <div class="col">
+            <div class="elevation pt-5">
             <div class="card mb-4">
                 <a href="{% url 'pdi_list' student.id %}" style="text-decoration: none;">
                     <div class="card-body text-center">
@@ -19,6 +48,7 @@
                         {% endfor %}
                     </div>
                 </a>
+            </div>
             </div>
         </div>
         {% endfor %}
