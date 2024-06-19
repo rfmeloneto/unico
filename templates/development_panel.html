@@ -5,11 +5,11 @@
 <div id="content" class="p-5">
     <h2>Painel de Desenvolvimento {{ estudante.nome }}</h2>
 
-    <div class="row"> 
-        <div class="col">
+    <div class="row justify-content-center"> 
+        <div class="col-md-4">
             <!-- Card com Total de PDIs em Aberto e Concluídos -->
-            <div class="card mb-4">
-                <div class="card-body">
+            <div class="card mb-4" style="width: fit-content; height: 100%; border-radius: 10%;">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
                     <h5 class="card-title">Total de PDIs</h5>
                     <p class="card-text">Abertos: {{ total_pdis_abertos.count }}</p>
                     <p class="card-text">Concluídos: {{ total_pdis_concluidos.count }}</p>
@@ -17,10 +17,10 @@
             </div>
         </div>
 
-        <div class="col">
+        <div class="col-md-4">
             <!-- Card Destaque com Média Geral -->
-            <div class="card mb-4" style="width: fit-content;">
-                <div class="card-body">
+            <div class="card mb-4" style="width: fit-content; height: 100%; border-radius: 10%;">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
                     <h5 class="card-title">Média Geral</h5>
                     <p class="card-text">{{ media_geral }}</p>
                 </div>
@@ -34,8 +34,8 @@
     <div class="row mb-4 mt-4">
         {% for habilidade, media in media_habilidades.items %}
             <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
+                <div class="card" style="width: fit-content; height: 100%; border-radius: 10%;">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
                         <h5 class="card-title">{{ habilidade }}</h5>
                         <p class="card-text">Média: {{ media }}</p>
                     </div>

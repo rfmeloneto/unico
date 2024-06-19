@@ -45,8 +45,10 @@
         <h3>Avaliação</h3>
         {% for avaliacao in avaliacoes %}
             <div class="card">
+                <div class="p-5">
                 <p>Comentário : {{ avaliacao.comentario }}</p>
-                <p>Nota : {{ avaliacao.nota }}</p>            
+                <p>Nota : {{ avaliacao.nota }}</p>   
+            </div>         
         {% endfor %}
     </div>
     {% endif %}
