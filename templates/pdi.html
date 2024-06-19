@@ -1,18 +1,63 @@
 {% extends 'base.html' %}
 {% block title %}PDI{% endblock %}
 {% block content %}
+
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+
+<style>
+    body{
+        background-color: #e5e5f7;
+        opacity: 0.8;
+        background-image:  radial-gradient(#444cf7 0.5px, transparent 0.5px), radial-gradient(#444cf7 0.5px, #e5e5f7 0.5px);
+        background-size: 20px 20px;
+        background-position: 0 0,10px 10px;
+    }
+</style>
+
+
+
+
+
 <div class="container p-5">
     
     <h1 class="mb-4 text-center">PDI - {{ student.nome }}</h1>
     <div class="d-flex justify-content-center">
-    <div class ="p-3">  
-    <a href="{% url 'add_pdi' student.id %}" class="btn btn-primary mb-4">Criar novo PDI</a>
+ 
+    <div class ="p-3">
+        
+    <div class="row">
+        <div class="d-flex justify-content-center">
+        <a href="{% url 'add_pdi' student.id %}"> <i class="material-icons" style="font-size: 45px; color: #004A7C">
+            add_circle
+        </i></a> 
+        </div>   
+    </div>   
+    <h6>Criar novo PDI</h6>
     </div> 
-    <div class ="p-3">   
-    <a href="{% url 'list_students'%}" class="btn btn-primary mb-4">Listar Estudantes</a>
+    <div style="width: 24px;"></div>
+    <div class ="p-3">
+        <div class ="row">
+            <div class="d-flex justify-content-center">           
+                <a href="{% url 'list_students' %}"> <i class="material-icons" style="font-size: 45px; color: #004A7C">
+                    groups
+                </i></a> 
+        </div>
+        <h6 class="text-center">Listar Estudantes</h6>
+    </div>
     </div>
     <div class ="p-3">  
-    <a href="{% url 'development_panel' student.id%}" class="btn btn-primary mb-4">Painel de Desenvolvimento</a>
+    <!-- <a href="{% url 'development_panel' student.id%}" class="btn btn-primary mb-4">Painel de Desenvolvimento</a> -->
+    <div class ="row">
+        <div class="d-flex justify-content-center">           
+            <a href="{% url 'development_panel' student.id %}"> <i class="material-icons" style="font-size: 45px; color: #004A7C">
+                insert_chart
+            </i></a> 
+    </div>
+    <h6 class="text-center">Painel de Desenvolvimento</h6>
+</div>
+    </div>
     </div>
     </div>
     <div class="row row-cols-1 row-cols-md-3 g-4">
