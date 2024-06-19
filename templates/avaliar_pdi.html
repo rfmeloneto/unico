@@ -2,7 +2,7 @@
 {% block title %}Avaliação PDI{% endblock %}
 {% block content %}
 
-    <div id="content">
+    <div id="content" class="p-5">
         <h2>Avaliação para {{ pdi_id.titulo }}</h2>
         <form id="pdi-form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
