@@ -1,8 +1,7 @@
 from django import forms
 
 from core.choices import AVALIAR_PDI_CHOICES
-from .models import Pdi, Formulario, Competencia, Habilidade, Comunicacao, Avaliacao
-from ckeditor.widgets import CKEditorWidget
+from .models import Pdi, Formulario, Comunicacao, Avaliacao
 
 
 class FormularioForm(forms.ModelForm):
@@ -13,7 +12,7 @@ class FormularioForm(forms.ModelForm):
             "habilidade": forms.Select(attrs={"class": "form-control"}),
             "competencia": forms.Select(attrs={"class": "form-control"}),
             "estrategia": forms.Textarea(
-                attrs={"class": "form-control custom-textarea", "rows": 10}
+                attrs={"class": "form-control custom-textarea", "rows": 100}
             ),
             "nota": forms.NumberInput(attrs={"class": "form-control"}),
         }
@@ -50,7 +49,7 @@ class PdiForm(forms.ModelForm):
                 attrs={"class": "form-control", "type": "date"}
             ),
             "descricao": forms.Textarea(
-                attrs={"class": "form-control custom-textarea", "rows": 10},
+                attrs={"class": "form-control custom-textarea", "rows": 100},
             ),
             "competencia": forms.Select(attrs={"class": "form-control"}),
             "arquivo": forms.FileInput(attrs={"class": "form-control"}),
@@ -88,7 +87,7 @@ class PdiEditForm(forms.ModelForm):
         widgets = {
             "titulo": forms.TextInput(attrs={"class": "form-control"}),
             "descricao": forms.Textarea(
-                attrs={"class": "form-control custom-textarea", "rows": 10},
+                attrs={"class": "form-control custom-textarea", "rows": 100},
             ),
             "competencia": forms.Select(attrs={"class": "form-control"}),
             "arquivo": forms.FileInput(attrs={"class": "form-control"}),
@@ -110,7 +109,7 @@ class ComunicacaoForm(forms.ModelForm):
         fields = ["menssagem", "arquivo"]
         widgets = {
             "menssagem": forms.Textarea(
-                attrs={"class": "form-control custom-textarea", "rows": 10}
+                attrs={"class": "form-control custom-textarea", "rows": 100}
             ),
             "arquivo": forms.FileInput(attrs={"class": "form-control"}),
         }
@@ -131,7 +130,7 @@ class AvaliacaoForm(forms.ModelForm):
         fields = ["comentario", "arquivo"]
         widgets = {
             "comentario": forms.Textarea(
-                attrs={"class": "form-control custom-textarea", "rows": 10}
+                attrs={"class": "form-control custom-textarea", "rows": 100}
             ),
             "arquivo": forms.FileInput(attrs={"class": "form-control"}),
         }

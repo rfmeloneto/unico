@@ -101,6 +101,8 @@ def pdi_list(request, student_id):
     else:
         pdi_list = Pdi.objects.filter(estudante_id=student_id)
         student = Estudante.objects.get(id=student_id)
+        for p in pdi_list:
+            p.descricao = p.descricao[:300]
         return render(request, "pdi.html", {"pdi_list": pdi_list, "student": student})
 
 
@@ -299,7 +301,6 @@ def development_panel(request, estudante_id):
 
     total_pdis_abertos = Pdi.objects.filter(estudante=estudante_id, concluido=False)
     total_pdis_concluidos = Pdi.objects.filter(estudante=estudante_id, concluido=True)
-
 
     return render(
         request,

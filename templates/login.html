@@ -1,11 +1,19 @@
 {% extends 'base.html' %}
 {% block title %}Login{% endblock %}
 {% block content %}
+{% load static %}
+<style>
+    body {
+        background-image: url('{% static "image/home-bg.jpg" %}');
+        background-size: cover;
+        background-position: center;
+    }
+</style>
 <body>
 
-<div class="login-container">
-    <div class="card login-card p-3" style="width: 300px;">
-        <h2 class="card-title text-center">Login</h2>
+<div class="login-container login-bg">
+    <div class="card login-card p-3" style="width: 500px;">
+        <h2 class="card-title text-center">Entrar - Sistema Único</h2>
         <div class="text-center"> <!-- Adicionando classe text-center -->
             <form method="post">
                 {% csrf_token %}
@@ -15,7 +23,7 @@
                 <div class="mb-3 ms-5">
                     <input type="password" class="form-control" name="password" placeholder="Senha" required>
                 </div>
-                <button type="submit" class="btn btn-primary" value="Login">Login</button>
+                <button type="submit" class="btn btn-primary" value="Login">Entrar</button>
             </form>
         </div>
     </div>

@@ -2,9 +2,9 @@
 {% block title %}PDI {{ pdi.titulo }} - para {{ estudante.nome }}{% endblock %}
 {% block content %}
 
-<div id="content">
+<div id="content" class="p-5">
     <h2>PDI {{ pdi.titulo }} - para {{ estudante.nome }} - {{ pdi.data_inicial }} - {{ pdi.data_final }}</h2>
-    <button class="button info"><a style="text-decoration: none; color: white" href="http://127.0.0.1:8000/" target=”_blank”>Assistente IA</a></button>
+    <button class="button info"><a style="text-decoration: none; color: white" href="http://127.0.0.1:12345/" target=”_blank”>Assistente IA</a></button>
     <form id="pdi-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
@@ -34,9 +34,11 @@
         <h3>Atividades</h3>
         {% for atividade in atividades %}
             <div class="card">
+            <div class="p-5">
                 <p>Competência : {{ atividade.competencia }}</p>
                 <p>Habilidade : {{ atividade.habilidade }}</p>
                 <p>Atividade : {{ atividade.estrategia }}</p>
+            </div>
                 {% if atividade.nota %}
                     <p>Nota : {{ atividade.nota }}</p>
                 {% endif %}
@@ -69,6 +71,7 @@
         <h3>Comentários</h3>
         {% for comentario in comentarios %}
             <div class="card">
+            <div class="p-5">
                 <h6>Autor: {{ comentario.autor.user.first_name }}</h6>
                 <p>Menssagem : {{ comentario.menssagem }}</p>
                 {% if comentario.arquivo %}
@@ -78,6 +81,7 @@
                 <a href="{% url 'download_files' comentario.arquivo.id %}" button class="button info" style="text-decoration: none;">Baixar</button> </a>
                 {% endif %}
             </div>
+        </div>
             <hr>
         {% endfor %}
     </div>
