@@ -24,6 +24,7 @@ from .models import (
     Comunicacao,
     Formulario,
     Avaliacao,
+    Competencia,
 )
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
@@ -302,10 +303,28 @@ def development_panel(request, estudante_id):
     total_pdis_abertos = Pdi.objects.filter(estudante=estudante_id, concluido=False)
     total_pdis_concluidos = Pdi.objects.filter(estudante=estudante_id, concluido=True)
 
+    media_competencias = {}
+    notas = []
+    for pdi in pdis:
+        avaliacao = Avaliacao.objects.get(pdi=pdi)
+        if avaliacao.nota:
+            notas.append(avaliacao.nota)
+        if pdi.competencia.competencia in media_competencias:
+            media_competencias[pdi.competencia.competencia] += avaliacao.nota
+        else:
+            media_competencias[pdi.competencia.get_competencia_display()] = (
+                avaliacao.nota
+            )
+    if notas:
+        media_competencias[pdi.competencia.get_competencia_display()] = sum(
+            notas
+        ) / len(notas)
+
     return render(
         request,
         "development_panel.html",
         {
+            "media_competencias": media_competencias,
             "media_habilidade_json": media_habilidade_json,
             "avaliacoes_json": avaliacoes_json,
             # "nota_counts": nota_counts,

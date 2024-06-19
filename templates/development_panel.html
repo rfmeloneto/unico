@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col">
         <!-- Card Destaque com Média Geral -->
         <div class="card mb-4" style="width: fit-content;">
@@ -38,6 +38,22 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{{ habilidade }}</h5>
+                        <p class="card-text">Média: {{ media }}</p>
+                    </div>
+                </div>
+            </div>
+            
+        {% endfor %}
+    </div>
+   <hr> 
+
+       <!-- Cards de Média por Competencia -->
+       <div class="row mb-4 mt-4">
+        {% for competencia, media in media_competencias.items %}
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ competencia }}</h5>
                         <p class="card-text">Média: {{ media }}</p>
                     </div>
                 </div>

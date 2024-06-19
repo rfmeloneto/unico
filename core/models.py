@@ -15,11 +15,14 @@ from core.choices import (
 )
 
 log = logging.getLogger(__name__)
-from django.contrib.auth import get_user_model
 
 
 class Habilidade(models.Model):
     habilidade = models.CharField(max_length=300, blank=False, null=False)
+
+    class Meta:
+        verbose_name = "Cadastro de Habilidade"
+        verbose_name_plural = "Cadastro de Habilidades"
 
     def __str__(self):
         return f"{self.habilidade}"
@@ -29,6 +32,10 @@ class Competencia(models.Model):
     competencia = models.IntegerField(
         choices=COMPETENCIA_CHOICES, blank=False, null=False
     )
+
+    class Meta:
+        verbose_name = "Cadastro de Competência"
+        verbose_name_plural = "Cadastro de Competências"
 
     def __str__(self):
         return f"{self.get_competencia_display()}"
@@ -40,12 +47,20 @@ class Arquivo(models.Model):
         blank=True, null=True, upload_to="files/", verbose_name="Arquivo"
     )
 
+    class Meta:
+        verbose_name = "Cadastro de Arquivo"
+        verbose_name_plural = "Cadastro de Arquivos"
+
     def __str__(self):
         return f"{self.titulo}"
 
 
 class Perfil(models.Model):
     tipo = models.IntegerField(choices=PERFIL_CHOICES, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Cadastro de Perfil"
+        verbose_name_plural = "Cadastro de Perfis"
 
     def __str__(self):
         return f"{self.get_tipo_display()}"
@@ -56,6 +71,10 @@ class Deficiencia(models.Model):
         choices=DEFICIENCIA_CHOICES, blank=True, null=True
     )
 
+    class Meta:
+        verbose_name = "Cadastro de Deficiência"
+        verbose_name_plural = "Cadastro de Deficiências"
+
     def __str__(self):
         return f"{self.get_deficiencia_display()}"
 
@@ -63,6 +82,10 @@ class Deficiencia(models.Model):
 class Etapa(models.Model):
     etapa = models.IntegerField(choices=ETAPA_ENSINO_CHOICES, blank=True, null=True)
     serie = models.IntegerField(choices=SERIE_CHOICES, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Cadastro de Etapa"
+        verbose_name_plural = "Cadastro de Etapas"
 
     def __str__(self):
         return f"{self.get_etapa_display()} - {self.get_serie_display()}"
@@ -83,6 +106,10 @@ class Escola(models.Model):
     etapa = models.ManyToManyField(
         Etapa, related_name="escola_etapas", null=True, blank=True
     )
+
+    class Meta:
+        verbose_name = "Cadastro de Escola"
+        verbose_name_plural = "Cadastro de Escolas"
 
     def __str__(self):
         return f"{self.nome} - {self.get_dep_adm_display()} - {self.get_localizacao_display()}"
@@ -110,6 +137,10 @@ class Estudante(models.Model):
         blank=True,
     )
 
+    class Meta:
+        verbose_name = "Cadastro de Estudante"
+        verbose_name_plural = "Cadastro de Estudantes"
+
     def __str__(self):
         return f"{self.nome} - {self.escola.nome} - {self.etapa.serie}"
 
@@ -126,6 +157,10 @@ class Integrante(models.Model):
         null=True,
         blank=True,
     )
+
+    class Meta:
+        verbose_name = "Cadastro de Integrante da Equipe"
+        verbose_name_plural = "Cadastro de Integrantes da Equipe"
 
     def __str__(self):
         return f"{self.user.first_name} - {[escola for escola in self.escola.all()]} - {self.perfil.get_tipo_display()}"
@@ -158,6 +193,10 @@ class Pdi(models.Model):
         blank=True,
     )
 
+    class Meta:
+        verbose_name = "Cadastro de Pdi"
+        verbose_name_plural = "Cadastro de Pdis"
+
     def __str__(self):
         return f"{self.titulo}"
 
@@ -184,6 +223,10 @@ class Comunicacao(models.Model):
         blank=True,
     )
 
+    class Meta:
+        verbose_name = "Comunicação"
+        verbose_name_plural = "Comunicações"
+
     def __str__(self):
         return f"{self.autor} {self.menssagem[:20]}"
 
@@ -204,6 +247,10 @@ class Avaliacao(models.Model):
         null=True,
         blank=True,
     )
+
+    class Meta:
+        verbose_name = "Avaliação"
+        verbose_name_plural = "Avaliações"
 
     def __str__(self):
         return f"{self.pdi} {self.arquivo}"
@@ -229,6 +276,10 @@ class Formulario(models.Model):
     )
     nota = models.IntegerField(default=0)
     estrategia = models.TextField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Formulário"
+        verbose_name_plural = "Formulários"
 
     def __str__(self):
         return f"{self.pdi}"
