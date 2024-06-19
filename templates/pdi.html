@@ -14,6 +14,10 @@
         background-size: 20px 20px;
         background-position: 0 0,10px 10px;
     }
+
+    .elevation{
+        box-shadow: 0 40px 50px rgba(0, 0, 0, 0.1);
+    }
 </style>
 
 
@@ -26,9 +30,11 @@
     <div class="d-flex justify-content-center">
  
     <div class ="p-3">
-        
+       
     <div class="row">
+       
         <div class="d-flex justify-content-center">
+      
         <a href="{% url 'add_pdi' student.id %}"> <i class="material-icons" style="font-size: 45px; color: #004A7C">
             add_circle
         </i></a> 
@@ -63,7 +69,7 @@
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for pdi in pdi_list %}
         <div class="col">
-            <div class="card">
+            <div class="card elevation">
                 <a href="{% url 'edit_pdi' pdi.id %}">
                 <div class="card-body">     
                     <h5 class="card-title">{{ pdi.titulo }}</h5>
